@@ -27,6 +27,7 @@ import (
 	structpb "google.golang.org/protobuf/types/known/structpb"
 
 	"github.com/integr8ly/integreatly-operator/pkg/resources/events"
+	"github.com/integr8ly/integreatly-operator/pkg/resources/ratelimit"
 
 	"github.com/integr8ly/integreatly-operator/pkg/products/monitoring"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/backup"
@@ -171,6 +172,10 @@ func (r *Reconciler) Reconcile(ctx context.Context, installation *integreatlyv1a
 	productNamespace := r.Config.GetNamespace()
 
 	phase, err := r.ReconcileFinalizer(ctx, serverClient, installation, string(r.Config.GetProductName()), func() (integreatlyv1alpha1.StatusPhase, error) {
+		if err := ratelimit.DeleteEnvoyConfigsInNamespaces(ctx, serverClient, productNamespace); err != nil {
+			return integreatlyv1alpha1.PhaseFailed, fmt.Errorf("failed to delete envoy config: %v", err)
+		}
+
 		phase, err := resources.RemoveNamespace(ctx, installation, serverClient, productNamespace)
 		if err != nil || phase != integreatlyv1alpha1.PhaseCompleted {
 			return phase, err

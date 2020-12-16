@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	marin3rv1alpha "github.com/3scale/marin3r/pkg/apis/marin3r/v1alpha1"
+	marin3rv1alpha "github.com/3scale/marin3r/apis/envoy/v1alpha1"
 	envoyapi "github.com/envoyproxy/go-control-plane/envoy/api/v2"
 	envoycore "github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
 	envoy_api_v2_endpoint "github.com/envoyproxy/go-control-plane/envoy/api/v2/endpoint"
@@ -44,7 +44,7 @@ import (
 
 	threescalev1 "github.com/3scale/3scale-operator/pkg/apis/apps/v1alpha1"
 	monitoringv1alpha1 "github.com/integr8ly/application-monitoring-operator/pkg/apis/applicationmonitoring/v1alpha1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	keycloak "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
 
 	"github.com/integr8ly/integreatly-operator/pkg/config"

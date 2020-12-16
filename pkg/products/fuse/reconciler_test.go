@@ -18,7 +18,7 @@ import (
 	threescalev1 "github.com/3scale/3scale-operator/pkg/apis/apps/v1alpha1"
 	keycloak "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	moqclient "github.com/integr8ly/integreatly-operator/pkg/client"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 
@@ -180,7 +180,7 @@ func TestReconciler_config(t *testing.T) {
 				},
 				TypeMeta: metav1.TypeMeta{
 					Kind:       "installation",
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 			}),
 			FakeConfig: basicConfigMock(),
@@ -271,8 +271,8 @@ func TestReconciler_reconcileCustomResource(t *testing.T) {
 			FakeConfig: basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: testRHMINamespace,
@@ -287,8 +287,8 @@ func TestReconciler_reconcileCustomResource(t *testing.T) {
 			FakeConfig: basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: testRHMINamespace,
@@ -304,8 +304,8 @@ func TestReconciler_reconcileCustomResource(t *testing.T) {
 			FakeConfig: basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: testRHMINamespace,
@@ -320,8 +320,8 @@ func TestReconciler_reconcileCustomResource(t *testing.T) {
 			FakeConfig: basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: testRHMINamespace,
@@ -343,8 +343,8 @@ func TestReconciler_reconcileCustomResource(t *testing.T) {
 			FakeConfig: basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: testRHMINamespace,
@@ -392,8 +392,8 @@ func TestReconciler_fullReconcile(t *testing.T) {
 			UID:       types.UID("xyz"),
 		},
 		TypeMeta: metav1.TypeMeta{
-			Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-			APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+			Kind:       "RHMI",
+			APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 		},
 	}
 

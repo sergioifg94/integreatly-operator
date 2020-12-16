@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	testResources "github.com/integr8ly/integreatly-operator/test/resources"
+
 	"github.com/integr8ly/integreatly-operator/pkg/products/rhssocommon"
 
 	"github.com/integr8ly/integreatly-operator/version"
@@ -21,7 +23,7 @@ import (
 
 	keycloak "github.com/keycloak/keycloak-operator/pkg/apis/keycloak/v1alpha1"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	"github.com/sirupsen/logrus"
 
 	"github.com/integr8ly/integreatly-operator/pkg/config"

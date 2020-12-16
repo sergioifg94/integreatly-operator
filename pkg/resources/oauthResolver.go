@@ -12,7 +12,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
+	"github.com/operator-framework/operator-sdk/internal/util/k8sutil"
 )
 
 const oauthServerDetails = "%s/.well-known/oauth-authorization-server"

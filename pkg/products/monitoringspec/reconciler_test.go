@@ -10,7 +10,7 @@ import (
 
 	prometheusmonitoringv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/marketplace"
 
 	moqclient "github.com/integr8ly/integreatly-operator/pkg/client"
@@ -44,8 +44,8 @@ func basicInstallation() *integreatlyv1alpha1.RHMI {
 			UID:       types.UID("xyz"),
 		},
 		TypeMeta: metav1.TypeMeta{
-			Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-			APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+			Kind:       "RHMI",
+			APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 		},
 		Spec: integreatlyv1alpha1.RHMISpec{
 			SMTPSecret:           mockSMTPSecretName,

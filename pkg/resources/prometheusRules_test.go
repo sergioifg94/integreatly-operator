@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	monitoringv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"

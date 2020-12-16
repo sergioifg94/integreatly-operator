@@ -1,0 +1,15 @@
+domain: integreatly.org
+layout: go.kubebuilder.io/v2
+multigroup: true
+projectName: integreatly-operator-1
+repo: github.com/integr8ly/integreatly-operator
+resources:
+- group: rhmi
+  kind: RHMI
+  version: v1alpha1
+- group: rhmiconfig
+  kind: RHMIConfig
+  version: v1alpha1
+version: 3-alpha
+plugins:
+  go.sdk.operatorframework.io/v2-alpha: {}

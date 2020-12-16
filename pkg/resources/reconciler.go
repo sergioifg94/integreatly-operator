@@ -6,7 +6,7 @@ import (
 	"fmt"
 	productsConfig "github.com/integr8ly/integreatly-operator/pkg/config"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 
 	"github.com/integr8ly/integreatly-operator/pkg/resources/backup"
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
@@ -23,7 +23,7 @@ import (
 )
 
 var (
-	OwnerLabelKey = integreatlyv1alpha1.SchemeGroupVersion.Group + "/installation-uid"
+	OwnerLabelKey = integreatlyv1alpha1.GroupVersion.Group + "/installation-uid"
 )
 
 // This is the base reconciler that all the other reconcilers extend. It handles things like namespace creation, subscription creation etc

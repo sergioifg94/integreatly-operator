@@ -17,8 +17,8 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	threescalev1 "github.com/3scale/3scale-operator/pkg/apis/apps/v1alpha1"
-	kafkav1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis-products/kafka.strimzi.io/v1alpha1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	kafkav1alpha1 "github.com/integr8ly/integreatly-operator/apis-products/kafka.strimzi.io/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	moqclient "github.com/integr8ly/integreatly-operator/pkg/client"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
@@ -327,8 +327,8 @@ func TestReconciler_reconcileComponents(t *testing.T) {
 			FakeConfig:      basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: controllerruntime.ObjectMeta{
 					Namespace: defaultOperatorNamespace,
@@ -352,8 +352,8 @@ func TestReconciler_reconcileComponents(t *testing.T) {
 			FakeConfig: basicConfigMock(),
 			Installation: &integreatlyv1alpha1.RHMI{
 				TypeMeta: metav1.TypeMeta{
-					Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-					APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+					Kind:       "RHMI",
+					APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 				},
 				ObjectMeta: controllerruntime.ObjectMeta{
 					Namespace: defaultOperatorNamespace,
@@ -414,8 +414,8 @@ func TestReconciler_full_RHMI_Reconcile(t *testing.T) {
 			UID:        types.UID("xyz"),
 		},
 		TypeMeta: metav1.TypeMeta{
-			Kind:       integreatlyv1alpha1.SchemaGroupVersionKind.Kind,
-			APIVersion: integreatlyv1alpha1.SchemeGroupVersion.String(),
+			Kind:       "RHMI",
+			APIVersion: integreatlyv1alpha1.GroupVersion.String(),
 		},
 		Status: integreatlyv1alpha1.RHMIStatus{
 			Stages: map[integreatlyv1alpha1.StageName]integreatlyv1alpha1.RHMIStageStatus{

@@ -1,0 +1,7 @@
+apiVersion: rhmi.integreatly.org/v1alpha1
+kind: RHMI
+metadata:
+  name: rhmi-sample
+spec:
+  # Add fields here
+  foo: bar

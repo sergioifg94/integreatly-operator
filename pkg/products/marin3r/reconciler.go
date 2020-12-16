@@ -17,9 +17,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	marin3r "github.com/3scale/marin3r/pkg/apis/operator/v1alpha1"
+	marin3roperator "github.com/3scale/marin3r/apis/operator/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	marin3rconfig "github.com/integr8ly/integreatly-operator/pkg/products/marin3r/config"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
@@ -361,7 +361,7 @@ func (r *Reconciler) reconcileDiscoveryService(ctx context.Context, client k8scl
 	}
 
 	enabledNamespaces := []string{threescaleConfig.GetNamespace()}
-	discoveryService := &marin3r.DiscoveryService{
+	discoveryService := &marin3roperator.DiscoveryService{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: discoveryServiceName,
 		},
@@ -383,7 +383,7 @@ func (r *Reconciler) reconcileDiscoveryService(ctx context.Context, client k8scl
 }
 
 func (r *Reconciler) deleteDiscoveryService(ctx context.Context, client k8sclient.Client) error {
-	discoveryService := &marin3r.DiscoveryService{}
+	discoveryService := &marin3roperator.DiscoveryService{}
 	if err := client.Get(ctx, k8sclient.ObjectKey{
 		Name: discoveryServiceName,
 	}, discoveryService); err != nil {

@@ -11,9 +11,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
+	"github.com/operator-framework/operator-sdk/internal/util/k8sutil"
+>>>>>>> d8c00315 (refactor!: Begin to migrate to operator-sdk v1.2.0)
 )
-
 const oauthServerDetails = "%s/.well-known/oauth-authorization-server"
 const defaultHost = "https://openshift.default.svc"
 const rootCAFile = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"

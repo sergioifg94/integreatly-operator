@@ -13,6 +13,7 @@ require (
 	github.com/aerogear/unifiedpush-operator v0.5.0
 	github.com/apicurio/apicurio-operators/apicurito v0.0.0-20200123142409-83e0a91dd6be
 	github.com/aws/aws-sdk-go v1.35.23
+	github.com/blang/semver v3.5.1+incompatible
 	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.17+incompatible // indirect
 	github.com/coreos/prometheus-operator v0.40.0
@@ -26,7 +27,7 @@ require (
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/integr8ly/application-monitoring-operator v1.4.0
 	github.com/integr8ly/cloud-resource-operator v0.22.3
-	github.com/integr8ly/grafana-operator v2.0.0+incompatible // indirect
+	github.com/integr8ly/grafana-operator v2.0.0+incompatible
 	github.com/integr8ly/grafana-operator/v3 v3.6.0
 	github.com/integr8ly/keycloak-client v0.1.3
 	github.com/keycloak/keycloak-operator v0.0.0-20201214103814-d5fb27b4d916

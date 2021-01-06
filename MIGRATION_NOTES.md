@@ -28,17 +28,6 @@ The following issues have arised during the migration
 
 ### Next steps
 
-* Copy Subscription controller. In order to adapt a controller to the new version:
-    1. Copy the controller logic into the `controllers` package
-    2. Rename the package to `controllers` to follow the convention
-    3. Rename the reconciler to `ResourceReconciler`. Example: `SubscriptionReconciler`
-    4. If the `Log` field is not part of the reconciler, add it to follow the convention,
-       and rewire log calls to use this field (see other controllers)
-    5. Add kubebuilder RBAC markers to the controller
-    4. Remove imports to the `reconcile` package and use `ctrl` package (see other controllers):
-    5. Replace logic to create and add controller to manager for the `SetupWithManager` method (see other controllers)
-    6. Add the controller in `main.go` as the other controllers were added
-
 * We stopped using `context` (We pass always `context.TODO()` when needed). Newly scaffolded controllers use
   `context.Background()`. Might be a good time to check if it's a good practice to use it and won't result
   in memory leaks.

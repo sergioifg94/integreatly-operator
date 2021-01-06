@@ -24,8 +24,6 @@ import (
 
 	"github.com/go-logr/logr"
 
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
-
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
@@ -111,7 +109,7 @@ func (r *NamespaceLabelReconciler) SetupWithManager(mgr ctrl.Manager) error {
 }
 
 func New(mgr manager.Manager) *NamespaceLabelReconciler {
-	watchNS, err := k8sutil.GetWatchNamespace()
+	watchNS, err := resources.GetWatchNamespace()
 	if err != nil {
 		panic("could not get watch namespace from namespacelabel controller")
 	}

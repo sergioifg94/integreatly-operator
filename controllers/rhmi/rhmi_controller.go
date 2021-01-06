@@ -28,7 +28,6 @@ import (
 	"github.com/integr8ly/integreatly-operator/pkg/resources/poddistribution"
 
 	"github.com/go-logr/logr"
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -767,8 +766,8 @@ func (r *RHMIReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return nil
 }
 
-func createInstallationCR(ctx context.Context, serverClient k8sclient.Client) error {
-	namespace, err := k8sutil.GetWatchNamespace()
+func (r *RHMIReconciler) createInstallationCR(ctx context.Context, serverClient k8sclient.Client) error {
+	namespace, err := resources.GetWatchNamespace()
 	if err != nil {
 		return err
 	}

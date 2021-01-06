@@ -32,7 +32,9 @@ import (
 	namespacecontroller "github.com/integr8ly/integreatly-operator/controllers/namespacelabel"
 	rhmicontroller "github.com/integr8ly/integreatly-operator/controllers/rhmi"
 	rhmiconfigcontroller "github.com/integr8ly/integreatly-operator/controllers/rhmiconfig"
+	subscriptioncontroller "github.com/integr8ly/integreatly-operator/controllers/subscription"
 	usercontroller "github.com/integr8ly/integreatly-operator/controllers/user"
+	"github.com/integr8ly/integreatly-operator/pkg/resources"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -60,12 +62,19 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
+	watchNamespace, err := resources.GetWatchNamespace()
+	if err != nil {
+		setupLog.Error(err, "unable to get WatchNamespace, "+
+			"the manager will watch and manage resources in all namespaces")
+	}
+
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:             scheme,
 		MetricsBindAddress: metricsAddr,
 		Port:               9443,
 		LeaderElection:     enableLeaderElection,
 		LeaderElectionID:   "28185cee.integreatly.org",
+		Namespace:          watchNamespace,
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
@@ -92,6 +101,15 @@ func main() {
 		Log: ctrl.Log.WithName("controllers").WithName("User"),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "User")
+		os.Exit(1)
+	}
+	subscriptionCtrl, err := subscriptioncontroller.New(mgr)
+	if err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Subscription")
+		os.Exit(1)
+	}
+	if err = subscriptionCtrl.SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to setup controller", "controller", "Subscription")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

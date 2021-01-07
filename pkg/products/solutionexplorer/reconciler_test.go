@@ -8,7 +8,6 @@ import (
 	consolev1 "github.com/openshift/api/console/v1"
 
 	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	"github.com/integr8ly/integreatly-operator/pkg/apis"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/marketplace"
@@ -81,7 +80,7 @@ var oauthResolver = func() OauthResolver {
 func TestReconciler_ReconcileCustomResource(t *testing.T) {
 	// Initialize scheme so that types required by the scenarios are available
 	scheme := scheme.Scheme
-	if err := apis.AddToScheme(scheme); err != nil {
+	if err := integreatlyv1alpha1.AddToScheme(scheme); err != nil {
 		t.Fatalf("failed to initialize scheme: %s", err)
 	}
 
@@ -132,7 +131,7 @@ func TestReconciler_ReconcileCustomResource(t *testing.T) {
 func TestSolutionExplorer(t *testing.T) {
 	// Initialize scheme so that types required by the scenarios are available
 	scheme := scheme.Scheme
-	if err := apis.AddToScheme(scheme); err != nil {
+	if err := integreatlyv1alpha1.AddToScheme(scheme); err != nil {
 		t.Fatalf("failed to initialize scheme: %s", err)
 	}
 

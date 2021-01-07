@@ -3,10 +3,11 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"time"
+
+	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
 	"github.com/go-logr/logr"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
@@ -24,7 +25,6 @@ import (
 	catalogsourceClient "github.com/integr8ly/integreatly-operator/pkg/resources/catalogsource"
 
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 
 	pkgerr "github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -34,6 +34,8 @@ import (
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
+
+var log = l.NewLoggerWithContext(l.Fields{l.ControllerLogContext: "subscription_controller"})
 
 const (
 	// IntegreatlyPackage - package name is used for Subsription name
@@ -76,7 +78,7 @@ func New(mgr manager.Manager) (*SubscriptionReconciler, error) {
 		return nil, err
 	}
 
-	catalogSourceClient, err := catalogsourceClient.NewClient(context.TODO(), client)
+	catalogSourceClient, err := catalogsourceClient.NewClient(context.TODO(), client, log)
 	if err != nil {
 		return nil, err
 	}
@@ -124,11 +126,11 @@ type SubscriptionReconciler struct {
 // In a namespaced installation of integreatly operator it will only reconcile Subscription of the integreatly operator itself
 func (r *SubscriptionReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	log := r.Log.WithValues("subscription", request.NamespacedName)
+	// log := r.Log.WithValues("subscription", request.NamespacedName)
 
 	// skip any Subscriptions that are not integreatly operator
 	if !r.shouldReconcileSubscription(request) {
-		log.Info(fmt.Sprintf("not our subscription: %+v, %s", request, r.operatorNamespace))
+		log.Infof("Not our subscription", l.Fields{"request": request, "opNS": r.operatorNamespace})
 		return ctrl.Result{}, nil
 	}
 
@@ -150,7 +152,7 @@ func (r *SubscriptionReconciler) Reconcile(request ctrl.Request) (ctrl.Result, e
 		}
 	}
 
-	rhmiCr, err := resources.GetRhmiCr(r.Client, context.TODO(), request.NamespacedName.Namespace)
+	rhmiCr, err := resources.GetRhmiCr(r.Client, context.TODO(), request.NamespacedName.Namespace, log)
 	if err != nil {
 		return ctrl.Result{}, err
 	}
@@ -159,7 +161,7 @@ func (r *SubscriptionReconciler) Reconcile(request ctrl.Request) (ctrl.Result, e
 		return ctrl.Result{}, nil
 	}
 
-	return r.HandleUpgrades(context.TODO(), log, subscription, rhmiCr)
+	return r.HandleUpgrades(context.TODO(), subscription, rhmiCr)
 }
 
 func (r *SubscriptionReconciler) shouldReconcileSubscription(request ctrl.Request) bool {
@@ -176,7 +178,7 @@ func (r *SubscriptionReconciler) shouldReconcileSubscription(request ctrl.Reques
 	return false
 }
 
-func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, log logr.Logger, rhmiSubscription *operatorsv1alpha1.Subscription, installation *integreatlyv1alpha1.RHMI) (ctrl.Result, error) {
+func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, rhmiSubscription *operatorsv1alpha1.Subscription, installation *integreatlyv1alpha1.RHMI) (ctrl.Result, error) {
 	if !rhmiConfigs.IsUpgradeAvailable(rhmiSubscription) {
 		log.Info("no upgrade available")
 
@@ -219,7 +221,7 @@ func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, log logr.Lo
 
 	// checks if the operator is running locally don't use the catalogsource
 	csvFromCatalogSource := latestRHMICSV
-	if os.Getenv(k8sutil.ForceRunModeEnv) != string(k8sutil.LocalRunMode) {
+	if resources.IsRunInCluster() {
 		objectKey := k8sclient.ObjectKey{
 			Name:      rhmiSubscription.Spec.CatalogSource,
 			Namespace: rhmiSubscription.Spec.CatalogSourceNamespace,

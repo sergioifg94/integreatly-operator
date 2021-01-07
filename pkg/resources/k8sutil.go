@@ -5,6 +5,10 @@ import (
 	"os"
 )
 
+const (
+	serviceAccountDir = "/var/run/secrets/kubernetes.io/serviceaccount"
+)
+
 // GetWatchNamespace returns the Namespace the operator should be watching for changes
 func GetWatchNamespace() (string, error) {
 	// WatchNamespaceEnvVar is the constant for env variable WATCH_NAMESPACE
@@ -17,4 +21,19 @@ func GetWatchNamespace() (string, error) {
 		return "", fmt.Errorf("%s must be set", watchNamespaceEnvVar)
 	}
 	return ns, nil
+}
+
+// IsRunLocally checks if the operator is run locally
+func IsRunLocally() bool {
+	return !IsRunInCluster()
+}
+
+// IsRunInCluster checks if the operator is run in cluster
+func IsRunInCluster() bool {
+	_, err := os.Stat(serviceAccountDir)
+	if err == nil {
+		return true
+	}
+
+	return !os.IsNotExist(err)
 }

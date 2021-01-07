@@ -11,8 +11,6 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
-
-	"github.com/operator-framework/operator-sdk/internal/util/k8sutil"
 )
 
 const oauthServerDetails = "%s/.well-known/oauth-authorization-server"
@@ -37,7 +35,7 @@ func (or *OauthResolver) GetOauthEndPoint() (*OauthServerConfig, error) {
 
 	caCert, err := ioutil.ReadFile(rootCAFile)
 	// if running locally, CA certificate isn't available in expected path
-	if os.IsNotExist(err) && os.Getenv(k8sutil.ForceRunModeEnv) == string(k8sutil.LocalRunMode) {
+	if os.IsNotExist(err) && IsRunLocally() {
 		logrus.Warn("GetOauthEndPoint() will skip certificate verification - this is acceptable only if operator is running locally")
 		tr := &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},

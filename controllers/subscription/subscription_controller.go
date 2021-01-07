@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -24,7 +23,6 @@ import (
 	catalogsourceClient "github.com/integr8ly/integreatly-operator/pkg/resources/catalogsource"
 
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 
 	pkgerr "github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -219,7 +217,7 @@ func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, log logr.Lo
 
 	// checks if the operator is running locally don't use the catalogsource
 	csvFromCatalogSource := latestRHMICSV
-	if os.Getenv(k8sutil.ForceRunModeEnv) != string(k8sutil.LocalRunMode) {
+	if resources.IsRunInCluster() {
 		objectKey := k8sclient.ObjectKey{
 			Name:      rhmiSubscription.Spec.CatalogSource,
 			Namespace: rhmiSubscription.Spec.CatalogSourceNamespace,

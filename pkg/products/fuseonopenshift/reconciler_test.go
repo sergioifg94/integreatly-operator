@@ -17,7 +17,6 @@ import (
 	fakeclient "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	"github.com/integr8ly/integreatly-operator/pkg/apis"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/marketplace"
 
@@ -91,7 +90,7 @@ func setupRecorder() record.EventRecorder {
 func TestFuseOnOpenShift(t *testing.T) {
 	// Initialize scheme so that types required by the scenarios are available
 	scheme := scheme.Scheme
-	if err := apis.AddToScheme(scheme); err != nil {
+	if err := integreatlyv1alpha1.AddToScheme(scheme); err != nil {
 		t.Fatalf("failed to initialize scheme: %s", err)
 	}
 

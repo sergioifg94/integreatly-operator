@@ -23,8 +23,9 @@ type UserReconciler struct {
 	// Log logr.Logger
 }
 
-// +kubebuilder:rbac:groups=user.openshift.io,resources=users,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=user.openshift.io,resources=users/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=user.openshift.io,resources=groups,verbs=get;list;watch;create
+// +kubebuilder:rbac:groups=user.openshift.io,resources=groups,resourceNames=rhmi-developers,verbs=update;delete
+// +kubebuilder:rbac:groups=user.openshift.io,resources=users,verbs=watch;get;list
 
 func (r *UserReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()

@@ -100,8 +100,106 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 	}
 }
 
+// ClusterRole permissions
+
+// +kubebuilder:rbac:groups=integreatly.org;applicationmonitoring.integreatly.org,resources=*,verbs=*
 // +kubebuilder:rbac:groups=integreatly.org,resources=rhmis,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=integreatly.org,resources=rhmis/status,verbs=get;update;patch
+
+// We need to create consolelinks which are cluster level objects
+// +kubebuilder:rbac:groups=console.openshift.io,resources=consolelinks,verbs=get;create;update;delete
+
+// We are using ProjectRequests API to create namespaces where we automatically become admins
+// +kubebuilder:rbac:groups="";project.openshift.io,resources=projectrequests,verbs=create
+
+// Preflight check for existing installations of products
+// +kubebuilder:rbac:groups="",resources=namespaces,verbs=list;get;watch
+// +kubebuilder:rbac:groups=apps,resources=deployments;statefulsets,verbs=list;get;watch
+// +kubebuilder:rbac:groups=apps.openshift.io,resources=deploymentconfigs,verbs=list;get;watch
+
+// We need to get console route for solution explorer
+// +kubebuilder:rbac:groups=route.openshift.io,resources=routes,verbs=get
+
+// Reconciling Fuse templates and image streams
+// +kubebuilder:rbac:groups=template.openshift.io,resources=templates,verbs=get;create;update;delete
+// +kubebuilder:rbac:groups=image.openshift.io,resources=imagestreams,verbs=get;create;update;delete
+
+// Registry pull secret needs to be read to be then copied into some RHMI namespaces
+// +kubebuilder:rbac:groups="",resources=secrets;,verbs=get,resourceNames=pull-secret
+
+// We need to read this Secret from openshift-monitoring namespace in order to setup our monitoring stack
+// +kubebuilder:rbac:groups="",resources=secrets,verbs=get,resourceNames=grafana-datasources
+
+// OAuthClients are used for login into products with OpenShift User identity
+// +kubebuilder:rbac:groups=oauth.openshift.io,resources=oauthclients,verbs=create;get;update;delete
+
+// Updating the samples operator config cr to ignore fuse imagestreams and templates
+// +kubebuilder:rbac:groups=samples.operator.openshift.io,resources=configs,verbs=get;update,resourceNames=cluster
+
+// Permissions needed for our namespaces, but not given by "admin" role
+// - Namespace update permissions are needed for setting labels
+// +kubebuilder:rbac:groups="",resources=namespaces,verbs=update
+// - Installation of product operators
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=catalogsources;operatorgroups,verbs=create;list;get
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=catalogsources,verbs=update,resourceNames=rhmi-registry-cs
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=installplans,verbs=update
+
+// Monitoring resources not covered by namespace "admin" permissions
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=prometheusrules;servicemonitors,verbs=get;list;create;update;delete
+
+// Adding a rolebinding to the monitoring federation namespace
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=rolebindings,verbs=get;list;create;update;delete
+
+// Permission to fetch identity to get email for created Keycloak users in openshift realm
+// +kubebuilder:rbac:groups=user.openshift.io,resources=identities,verbs=get
+
+// Permission to manage ValidatingWebhookConfiguration CRs pointing to the webhook server
+// +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=validatingwebhookconfigurations;mutatingwebhookconfigurations,verbs=get;watch;list;create;update;delete
+
+// Permission to get the ConfigMap that embeds the CSV for an InstallPlan
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=get
+
+// Permission for marin3r resources
+// +kubebuilder:rbac:groups=marin3r.3scale.net,resources=envoyconfigs,verbs=get;list;watch;create;update;delete
+// +kubebuilder:rbac:groups=operator.marin3r.3scale.net,resources=discoveryservices,verbs=get;list;watch;create;update;delete
+
+// +kubebuilder:rbac:groups=scheduling.k8s.io,resources=*,verbs=*
+
+// Permission to list nodes in order to determine if a cluster is multi-az
+// +kubebuilder:rbac:groups="",resources=nodes,verbs=list
+
+// Permission to get cluster infrastructure details for alerting
+// +kubebuilder:rbac:groups=config.openshift.io,resources=infrastructures,verbs=get
+
+// Role permissions
+
+// +kubebuilder:rbac:groups="",resources=pods;events;configmaps;secrets,verbs=list;get;watch;create;update;patch,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups="",resources=pods;events;configmaps;secrets,verbs=list;get;watch;create;update;patch,namespace=redhat-rhoam-operator
+
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=delete,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=delete,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups="",resources=services;services/finalizers,verbs=get;create;list;watch;update;delete,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups="",resources=services;services/finalizers,verbs=get;create;list;watch;update;delete,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=servicemonitors,verbs=get;create,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=servicemonitors,verbs=get;create,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups=apps,resources=deployments/finalizers;replicasets;statefulsets,verbs=update;get,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=apps,resources=deployments/finalizers;replicasets;statefulsets,verbs=update;get,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=prometheusrules,verbs=get;list;create;update;delete;watch,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=prometheusrules,verbs=get;list;create;update;delete;watch,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles;rolebindings,verbs=get;list;create;update;delete;watch,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles;rolebindings,verbs=get;list;create;update;delete;watch,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups="",resources=pods;services;endpoints,verbs=get;list;watch,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups="",resources=pods;services;endpoints,verbs=get;list;watch,namespace=redhat-rhmi-operator
+
+// +kubebuilder:rbac:groups=marin3r.3scale.net,resources=envoyconfigs,verbs=get;list;watch;create;update;delete,namespace=redhat-rhoam-operator
+
+// +kubebuilder:rbac:groups=operator.marin3r.3scale.net,resources=discoveryservices,verbs=get;list;watch;create;update;delete,namespace=redhat-rhoam-operator
 
 func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()

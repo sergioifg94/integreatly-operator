@@ -30,7 +30,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	// +kubebuilder:scaffold:imports
 )
 

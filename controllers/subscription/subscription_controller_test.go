@@ -9,8 +9,7 @@ import (
 	olmv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/controllers/subscription/csvlocator"
 	"github.com/integr8ly/integreatly-operator/controllers/subscription/webapp"
 
@@ -30,11 +29,7 @@ const (
 
 func getBuildScheme() (*runtime.Scheme, error) {
 	scheme := runtime.NewScheme()
-	err := rhmiconfigv1alpha1.SchemeBuilder.AddToScheme(scheme)
-	if err != nil {
-		return scheme, err
-	}
-	err = v1alpha1.SchemeBuilder.AddToScheme(scheme)
+	err := v1alpha1.SchemeBuilder.AddToScheme(scheme)
 	if err != nil {
 		return scheme, err
 	}
@@ -73,17 +68,17 @@ func TestSubscriptionReconciler(t *testing.T) {
 		},
 	}
 
-	rhmiConfig := &rhmiconfigv1alpha1.RHMIConfig{
+	rhmiConfig := &integreatlyv1alpha1.RHMIConfig{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "rhmi-config",
 			Namespace: operatorNamespace,
 		},
-		Spec: rhmiconfigv1alpha1.RHMIConfigSpec{
-			Upgrade: rhmiconfigv1alpha1.Upgrade{
+		Spec: integreatlyv1alpha1.RHMIConfigSpec{
+			Upgrade: integreatlyv1alpha1.Upgrade{
 				NotBeforeDays:      intPtr(10),
 				WaitForMaintenance: boolPtr(true),
 			},
-			Maintenance: rhmiconfigv1alpha1.Maintenance{
+			Maintenance: integreatlyv1alpha1.Maintenance{
 				ApplyFrom: "Thu 00:00",
 			},
 		},

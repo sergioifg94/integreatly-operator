@@ -39,8 +39,9 @@ require (
 	github.com/operator-framework/operator-lifecycle-manager v3.11.0+incompatible
 	github.com/operator-framework/operator-marketplace v0.0.0-20200919233811-2d6d71892437
 	github.com/operator-framework/operator-registry v1.14.3
-	github.com/operator-framework/operator-sdk v1.2.0
+	github.com/operator-framework/operator-sdk v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1
+	github.com/prometheus/client_golang v1.7.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/syndesisio/syndesis/install/operator v0.0.0-20201210151747-8264b9904eab
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
@@ -96,3 +97,6 @@ replace (
 // replace github.com/googleapis/gnostic v0.5.3 => github.com/googleapis/gnostic v0.4.0
 
 replace github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
+
+replace github.com/integr8ly/cloud-resource-operator => /home/sergio/Documents/Go/src/github.com/integr8ly/cloud-resource-operator
+replace github.com/keycloak/keycloak-operator => /home/sergio/Documents/Go/src/github.com/keycloak/keycloak-operator

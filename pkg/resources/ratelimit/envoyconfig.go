@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	marin3rv1alpha1 "github.com/3scale/marin3r/apis/envoy/v1alpha1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 

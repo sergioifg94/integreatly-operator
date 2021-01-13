@@ -28,7 +28,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
+	"github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/sirupsen/logrus"
 
 	prometheusv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"

@@ -3,7 +3,7 @@ package metrics
 import (
 	"fmt"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/version"
 
 	"github.com/prometheus/client_golang/prometheus"

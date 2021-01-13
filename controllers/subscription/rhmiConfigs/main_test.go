@@ -6,8 +6,7 @@ import (
 	"testing"
 	"time"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/version"
 	"k8s.io/apimachinery/pkg/runtime"
 
@@ -29,27 +28,27 @@ func setupRecorder() record.EventRecorder {
 func TestCanUpgradeNow(t *testing.T) {
 	scenarios := []struct {
 		Name         string
-		Config       *rhmiconfigv1alpha1.RHMIConfig
+		Config       *integreatlyv1alpha1.RHMIConfig
 		Installation *integreatlyv1alpha1.RHMI
 		Validate     func(*testing.T, bool, error)
 	}{
 		{
 			Name: "always immediately returns true",
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "rhmi-config",
 					Namespace: defaultNamespace,
 				},
-				Spec: rhmiconfigv1alpha1.RHMIConfigSpec{
-					Upgrade: rhmiconfigv1alpha1.Upgrade{
+				Spec: integreatlyv1alpha1.RHMIConfigSpec{
+					Upgrade: integreatlyv1alpha1.Upgrade{
 						NotBeforeDays:      intPtr(0),
 						WaitForMaintenance: boolPtr(false),
 					},
 				},
-				Status: rhmiconfigv1alpha1.RHMIConfigStatus{
-					Upgrade: rhmiconfigv1alpha1.RHMIConfigStatusUpgrade{
-						Scheduled: &rhmiconfigv1alpha1.UpgradeSchedule{
-							For: nowOffset(-1).Format(rhmiconfigv1alpha1.DateFormat),
+				Status: integreatlyv1alpha1.RHMIConfigStatus{
+					Upgrade: integreatlyv1alpha1.RHMIConfigStatusUpgrade{
+						Scheduled: &integreatlyv1alpha1.UpgradeSchedule{
+							For: nowOffset(-1).Format(integreatlyv1alpha1.DateFormat),
 						},
 					},
 				},
@@ -75,25 +74,25 @@ func TestCanUpgradeNow(t *testing.T) {
 		},
 		{
 			Name: "during maintenance now returns true",
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "rhmi-config",
 					Namespace: defaultNamespace,
 				},
-				Spec: rhmiconfigv1alpha1.RHMIConfigSpec{
-					Upgrade: rhmiconfigv1alpha1.Upgrade{
+				Spec: integreatlyv1alpha1.RHMIConfigSpec{
+					Upgrade: integreatlyv1alpha1.Upgrade{
 						WaitForMaintenance: boolPtr(true),
 						NotBeforeDays:      intPtr(0),
 					},
 				},
-				Status: rhmiconfigv1alpha1.RHMIConfigStatus{
-					Maintenance: rhmiconfigv1alpha1.RHMIConfigStatusMaintenance{
+				Status: integreatlyv1alpha1.RHMIConfigStatus{
+					Maintenance: integreatlyv1alpha1.RHMIConfigStatusMaintenance{
 						ApplyFrom: nowOffset(-1).Format("2-1-2006 15:04"),
 						Duration:  "6hrs",
 					},
-					Upgrade: rhmiconfigv1alpha1.RHMIConfigStatusUpgrade{
-						Scheduled: &rhmiconfigv1alpha1.UpgradeSchedule{
-							For: nowOffset(-1).Format(rhmiconfigv1alpha1.DateFormat),
+					Upgrade: integreatlyv1alpha1.RHMIConfigStatusUpgrade{
+						Scheduled: &integreatlyv1alpha1.UpgradeSchedule{
+							For: nowOffset(-1).Format(integreatlyv1alpha1.DateFormat),
 						},
 					},
 				},
@@ -119,24 +118,24 @@ func TestCanUpgradeNow(t *testing.T) {
 		},
 		{
 			Name: "during maintenance expired returns false",
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "rhmi-config",
 					Namespace: defaultNamespace,
 				},
-				Spec: rhmiconfigv1alpha1.RHMIConfigSpec{
-					Upgrade: rhmiconfigv1alpha1.Upgrade{
+				Spec: integreatlyv1alpha1.RHMIConfigSpec{
+					Upgrade: integreatlyv1alpha1.Upgrade{
 						WaitForMaintenance: boolPtr(true),
 					},
 				},
-				Status: rhmiconfigv1alpha1.RHMIConfigStatus{
-					Maintenance: rhmiconfigv1alpha1.RHMIConfigStatusMaintenance{
+				Status: integreatlyv1alpha1.RHMIConfigStatus{
+					Maintenance: integreatlyv1alpha1.RHMIConfigStatusMaintenance{
 						ApplyFrom: nowOffset(-7).Format("2-1-2006 15:04"),
 						Duration:  "6hrs",
 					},
-					Upgrade: rhmiconfigv1alpha1.RHMIConfigStatusUpgrade{
-						Scheduled: &rhmiconfigv1alpha1.UpgradeSchedule{
-							For: nowOffset(-7).Format(rhmiconfigv1alpha1.DateFormat),
+					Upgrade: integreatlyv1alpha1.RHMIConfigStatusUpgrade{
+						Scheduled: &integreatlyv1alpha1.UpgradeSchedule{
+							For: nowOffset(-7).Format(integreatlyv1alpha1.DateFormat),
 						},
 					},
 				},
@@ -161,24 +160,24 @@ func TestCanUpgradeNow(t *testing.T) {
 		},
 		{
 			Name: "during maintenance in future returns false",
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "rhmi-config",
 					Namespace: defaultNamespace,
 				},
-				Spec: rhmiconfigv1alpha1.RHMIConfigSpec{
-					Upgrade: rhmiconfigv1alpha1.Upgrade{
+				Spec: integreatlyv1alpha1.RHMIConfigSpec{
+					Upgrade: integreatlyv1alpha1.Upgrade{
 						WaitForMaintenance: boolPtr(true),
 					},
 				},
-				Status: rhmiconfigv1alpha1.RHMIConfigStatus{
-					Maintenance: rhmiconfigv1alpha1.RHMIConfigStatusMaintenance{
+				Status: integreatlyv1alpha1.RHMIConfigStatus{
+					Maintenance: integreatlyv1alpha1.RHMIConfigStatusMaintenance{
 						ApplyFrom: nowOffset(2).Format("2-1-2006 15:04"),
 						Duration:  "6hrs",
 					},
-					Upgrade: rhmiconfigv1alpha1.RHMIConfigStatusUpgrade{
-						Scheduled: &rhmiconfigv1alpha1.UpgradeSchedule{
-							For: nowOffset(2).Format(rhmiconfigv1alpha1.DateFormat),
+					Upgrade: integreatlyv1alpha1.RHMIConfigStatusUpgrade{
+						Scheduled: &integreatlyv1alpha1.UpgradeSchedule{
+							For: nowOffset(2).Format(integreatlyv1alpha1.DateFormat),
 						},
 					},
 				},
@@ -203,13 +202,13 @@ func TestCanUpgradeNow(t *testing.T) {
 		},
 		{
 			Name: "Do not upgrade when another upgrade is in progress",
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "rhmi-config",
 					Namespace: defaultNamespace,
 				},
-				Spec: rhmiconfigv1alpha1.RHMIConfigSpec{
-					Upgrade: rhmiconfigv1alpha1.Upgrade{
+				Spec: integreatlyv1alpha1.RHMIConfigSpec{
+					Upgrade: integreatlyv1alpha1.Upgrade{
 						NotBeforeDays:      intPtr(0),
 						WaitForMaintenance: boolPtr(false),
 					},
@@ -390,9 +389,9 @@ func TestApproveUpgrade(t *testing.T) {
 		Context         context.Context
 		EventRecorder   record.EventRecorder
 		RhmiInstallPlan *olmv1alpha1.InstallPlan
-		Config          *rhmiconfigv1alpha1.RHMIConfig
+		Config          *integreatlyv1alpha1.RHMIConfig
 		RHMI            *integreatlyv1alpha1.RHMI
-		Verify          func(rhmiInstallPlan *olmv1alpha1.InstallPlan, config *rhmiconfigv1alpha1.RHMIConfig, rhmi *integreatlyv1alpha1.RHMI, err error)
+		Verify          func(rhmiInstallPlan *olmv1alpha1.InstallPlan, config *integreatlyv1alpha1.RHMIConfig, rhmi *integreatlyv1alpha1.RHMI, err error)
 	}{
 		{
 			Name:            "Test install plan already upgrading",
@@ -400,14 +399,14 @@ func TestApproveUpgrade(t *testing.T) {
 			Context:         context.TODO(),
 			EventRecorder:   setupRecorder(),
 			RhmiInstallPlan: installPlanAlreadyUpgrading,
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "test-config",
 					Namespace: defaultNamespace,
 				},
 			},
 			RHMI: rhmiMock,
-			Verify: func(updatedRhmiInstallPlan *olmv1alpha1.InstallPlan, config *rhmiconfigv1alpha1.RHMIConfig, rhmi *integreatlyv1alpha1.RHMI, err error) {
+			Verify: func(updatedRhmiInstallPlan *olmv1alpha1.InstallPlan, config *integreatlyv1alpha1.RHMIConfig, rhmi *integreatlyv1alpha1.RHMI, err error) {
 				// Should not return an error
 				if err != nil {
 					t.Fatalf("Unexpected error %v", err)
@@ -424,21 +423,21 @@ func TestApproveUpgrade(t *testing.T) {
 			Context:         context.TODO(),
 			EventRecorder:   setupRecorder(),
 			RhmiInstallPlan: installPlanReadyForApproval,
-			Config: &rhmiconfigv1alpha1.RHMIConfig{
+			Config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "test-config",
 					Namespace: defaultNamespace,
 				},
-				Status: rhmiconfigv1alpha1.RHMIConfigStatus{
-					Upgrade: rhmiconfigv1alpha1.RHMIConfigStatusUpgrade{
-						Scheduled: &rhmiconfigv1alpha1.UpgradeSchedule{
+				Status: integreatlyv1alpha1.RHMIConfigStatus{
+					Upgrade: integreatlyv1alpha1.RHMIConfigStatusUpgrade{
+						Scheduled: &integreatlyv1alpha1.UpgradeSchedule{
 							For: "13 Jul 2020 00:00",
 						},
 					},
 				},
 			},
 			RHMI: rhmiMock,
-			Verify: func(updatedRhmiInstallPlan *olmv1alpha1.InstallPlan, config *rhmiconfigv1alpha1.RHMIConfig, rhmi *integreatlyv1alpha1.RHMI, err error) {
+			Verify: func(updatedRhmiInstallPlan *olmv1alpha1.InstallPlan, config *integreatlyv1alpha1.RHMIConfig, rhmi *integreatlyv1alpha1.RHMI, err error) {
 				// Should not return an error
 				if err != nil {
 					t.Fatalf("Unexpected error %v", err)
@@ -462,7 +461,7 @@ func TestApproveUpgrade(t *testing.T) {
 			err := scenario.FakeClient.Get(scenario.Context, k8sclient.ObjectKey{Name: scenario.RhmiInstallPlan.Name, Namespace: scenario.RhmiInstallPlan.Namespace}, retrievedInstallPlan)
 			rhmi := &integreatlyv1alpha1.RHMI{}
 			err = scenario.FakeClient.Get(scenario.Context, k8sclient.ObjectKey{Name: scenario.RHMI.Name, Namespace: scenario.RHMI.Namespace}, rhmi)
-			updatedConfig := &rhmiconfigv1alpha1.RHMIConfig{}
+			updatedConfig := &integreatlyv1alpha1.RHMIConfig{}
 			scenario.FakeClient.Get(context.TODO(), k8sclient.ObjectKey{Name: "test-config", Namespace: defaultNamespace}, updatedConfig)
 			scenario.Verify(retrievedInstallPlan, updatedConfig, rhmi, err)
 		})
@@ -473,7 +472,6 @@ func buildScheme() *runtime.Scheme {
 	scheme := runtime.NewScheme()
 
 	integreatlyv1alpha1.SchemeBuilder.AddToScheme(scheme)
-	rhmiconfigv1alpha1.SchemeBuilder.AddToScheme(scheme)
 	olmv1alpha1.SchemeBuilder.AddToScheme(scheme)
 
 	return scheme

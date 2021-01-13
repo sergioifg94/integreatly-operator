@@ -6,8 +6,7 @@ import (
 	"strings"
 
 	solutionExplorerv1alpha1 "github.com/integr8ly/integreatly-operator/apis-products/tutorial-web-app-operator/v1alpha1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/products/solutionexplorer"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -17,7 +16,7 @@ import (
 )
 
 type UpgradeNotifier interface {
-	NotifyUpgrade(config *rhmiconfigv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error)
+	NotifyUpgrade(config *integreatlyv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error)
 	ClearNotification(namespacePrefix string) error
 }
 
@@ -72,7 +71,7 @@ func (lazyNotifier *LazyUpgradeNotifier) GetNotifier() (UpgradeNotifier, error) 
 	return lazyNotifier.Notifier, nil
 }
 
-func (lazyNotifier *LazyUpgradeNotifier) NotifyUpgrade(config *rhmiconfigv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error) {
+func (lazyNotifier *LazyUpgradeNotifier) NotifyUpgrade(config *integreatlyv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error) {
 	notifier, err := lazyNotifier.GetNotifier()
 	if err != nil {
 		return integreatlyv1alpha1.PhaseFailed, err
@@ -90,7 +89,7 @@ func (lazyNotifier *LazyUpgradeNotifier) ClearNotification(nsPrefix string) erro
 	return notifier.ClearNotification(nsPrefix)
 }
 
-func (notifier *UpgradeNotifierImpl) NotifyUpgrade(config *rhmiconfigv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error) {
+func (notifier *UpgradeNotifierImpl) NotifyUpgrade(config *integreatlyv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error) {
 	namespaceSegments := strings.Split(config.Namespace, "-")
 	namespacePrefix := strings.Join(namespaceSegments[0:2], "-") + "-"
 	webapp := &solutionExplorerv1alpha1.WebApp{
@@ -148,7 +147,7 @@ func (notifier *UpgradeNotifierImpl) ClearNotification(namespacePrefix string) e
 	return notifier.client.Update(notifier.ctx, webapp)
 }
 
-func makeUpgradeData(rhmiConfig *rhmiconfigv1alpha1.RHMIConfig, version string, isServiceAffecting bool) *upgradeData {
+func makeUpgradeData(rhmiConfig *integreatlyv1alpha1.RHMIConfig, version string, isServiceAffecting bool) *upgradeData {
 	var scheduledFor string
 	if rhmiConfig.Status.Upgrade.Scheduled != nil {
 		scheduledFor = rhmiConfig.Status.Upgrade.Scheduled.For
@@ -164,7 +163,7 @@ func makeUpgradeData(rhmiConfig *rhmiconfigv1alpha1.RHMIConfig, version string, 
 type NoOp struct {
 }
 
-func (noop *NoOp) NotifyUpgrade(config *rhmiconfigv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error) {
+func (noop *NoOp) NotifyUpgrade(config *integreatlyv1alpha1.RHMIConfig, version string, isServiceAffecting bool) (integreatlyv1alpha1.StatusPhase, error) {
 	return integreatlyv1alpha1.PhaseCompleted, nil
 }
 

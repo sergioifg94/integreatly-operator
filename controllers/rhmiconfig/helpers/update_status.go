@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 

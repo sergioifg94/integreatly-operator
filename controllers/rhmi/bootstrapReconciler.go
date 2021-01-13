@@ -14,8 +14,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	"github.com/integr8ly/integreatly-operator/pkg/metrics"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
@@ -302,7 +301,7 @@ func (r *Reconciler) checkRateLimitAlertsConfig(ctx context.Context, serverClien
 }
 
 func (r *Reconciler) reconcilerRHMIConfigCR(ctx context.Context, serverClient k8sclient.Client) (integreatlyv1alpha1.StatusPhase, error) {
-	rhmiConfig := &rhmiconfigv1alpha1.RHMIConfig{
+	rhmiConfig := &integreatlyv1alpha1.RHMIConfig{
 		TypeMeta: metav1.TypeMeta{},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "rhmi-config",

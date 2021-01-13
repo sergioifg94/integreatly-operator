@@ -27,8 +27,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	namespacecontroller "github.com/integr8ly/integreatly-operator/controllers/namespacelabel"
 	rhmicontroller "github.com/integr8ly/integreatly-operator/controllers/rhmi"
 	rhmiconfigcontroller "github.com/integr8ly/integreatly-operator/controllers/rhmiconfig"
@@ -47,7 +46,6 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(rhmiv1alpha1.AddToScheme(scheme))
-	utilruntime.Must(rhmiconfigv1alpha1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 

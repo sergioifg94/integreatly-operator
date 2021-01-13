@@ -8,8 +8,7 @@ import (
 	"testing"
 
 	solutionExplorerv1alpha1 "github.com/integr8ly/integreatly-operator/apis-products/tutorial-web-app-operator/v1alpha1"
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/products/solutionexplorer"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -21,7 +20,6 @@ func buildScheme() *runtime.Scheme {
 	scheme := runtime.NewScheme()
 
 	integreatlyv1alpha1.SchemeBuilder.AddToScheme(scheme)
-	rhmiconfigv1alpha1.SchemeBuilder.AddToScheme(scheme)
 	solutionExplorerv1alpha1.SchemeBuilder.AddToScheme(scheme)
 
 	return scheme
@@ -30,7 +28,7 @@ func buildScheme() *runtime.Scheme {
 func TestNotifyUpgrade(t *testing.T) {
 	type notifyUpgradeScenario struct {
 		name               string
-		config             *rhmiconfigv1alpha1.RHMIConfig
+		config             *integreatlyv1alpha1.RHMIConfig
 		version            string
 		isServiceAffecting bool
 		webapp             *solutionExplorerv1alpha1.WebApp
@@ -40,7 +38,7 @@ func TestNotifyUpgrade(t *testing.T) {
 	scenarios := []*notifyUpgradeScenario{
 		{
 			name: "Non existent webapp",
-			config: &rhmiconfigv1alpha1.RHMIConfig{
+			config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: v1.ObjectMeta{
 					Namespace: "test-namespaces-webapp",
 				},
@@ -65,13 +63,13 @@ func TestNotifyUpgrade(t *testing.T) {
 		},
 		{
 			name: "Upgrade data added",
-			config: &rhmiconfigv1alpha1.RHMIConfig{
+			config: &integreatlyv1alpha1.RHMIConfig{
 				ObjectMeta: v1.ObjectMeta{
 					Namespace: "test-namespaces-webapp",
 				},
-				Status: rhmiconfigv1alpha1.RHMIConfigStatus{
-					Upgrade: rhmiconfigv1alpha1.RHMIConfigStatusUpgrade{
-						Scheduled: &rhmiconfigv1alpha1.UpgradeSchedule{
+				Status: integreatlyv1alpha1.RHMIConfigStatus{
+					Upgrade: integreatlyv1alpha1.RHMIConfigStatusUpgrade{
+						Scheduled: &integreatlyv1alpha1.UpgradeSchedule{
 							For: "13 Jul 2020 00:00",
 						},
 					},

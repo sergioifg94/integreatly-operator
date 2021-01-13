@@ -10,8 +10,7 @@ import (
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 	"k8s.io/client-go/tools/record"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 
 	olmv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
@@ -69,7 +68,7 @@ func CreateInstallPlan(ctx context.Context, rhmiSubscription *olmv1alpha1.Subscr
 	return nil
 }
 
-func CanUpgradeNow(config *rhmiconfigv1alpha1.RHMIConfig, installation *integreatlyv1alpha1.RHMI) (bool, error) {
+func CanUpgradeNow(config *integreatlyv1alpha1.RHMIConfig, installation *integreatlyv1alpha1.RHMI) (bool, error) {
 	//Another upgrade in progress - don't proceed with upgrade
 	if (string(installation.Status.Stage) != string(integreatlyv1alpha1.PhaseCompleted)) && installation.Status.ToVersion != "" {
 		return false, nil
@@ -96,7 +95,7 @@ func CanUpgradeNow(config *rhmiconfigv1alpha1.RHMIConfig, installation *integrea
 
 	//don't approve upgrades in the last hour of the window
 	window := time.Hour * time.Duration(duration-WINDOW_MARGIN)
-	upgradeTime, err := time.Parse(rhmiconfigv1alpha1.DateFormat, config.Status.Upgrade.Scheduled.For)
+	upgradeTime, err := time.Parse(integreatlyv1alpha1.DateFormat, config.Status.Upgrade.Scheduled.For)
 	if err != nil {
 		return false, err
 	}

@@ -20,8 +20,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmi/v1alpha1"
-	rhmiconfigv1alpha1 "github.com/integr8ly/integreatly-operator/apis/rhmiconfig/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	catalogsourceClient "github.com/integr8ly/integreatly-operator/pkg/resources/catalogsource"
 
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -208,7 +207,7 @@ func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, rhmiSubscri
 		return ctrl.Result{}, err
 	}
 
-	config := &rhmiconfigv1alpha1.RHMIConfig{
+	config := &integreatlyv1alpha1.RHMIConfig{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "rhmi-config",
 			Namespace: r.operatorNamespace,
@@ -287,7 +286,7 @@ func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, rhmiSubscri
 	isServiceAffecting := rhmiConfigs.IsUpgradeServiceAffecting(latestRHMICSV)
 
 	if isServiceAffecting && !latestRHMIInstallPlan.Spec.Approved && config.Status.UpgradeAvailable == nil {
-		newUpgradeAvailable := &rhmiconfigv1alpha1.UpgradeAvailable{
+		newUpgradeAvailable := &integreatlyv1alpha1.UpgradeAvailable{
 			TargetVersion: rhmiSubscription.Status.CurrentCSV,
 			AvailableAt:   latestRHMIInstallPlan.CreationTimestamp,
 		}

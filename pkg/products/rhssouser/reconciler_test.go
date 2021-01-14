@@ -34,7 +34,6 @@ import (
 
 	coreosv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	marketplacev1 "github.com/operator-framework/operator-marketplace/pkg/apis/operators/v1"
 	appsv1 "k8s.io/api/apps/v1"
 
 	crov1 "github.com/integr8ly/cloud-resource-operator/pkg/apis/integreatly/v1alpha1"
@@ -105,10 +104,6 @@ func getBuildScheme() (*runtime.Scheme, error) {
 		return nil, err
 	}
 	err = operatorsv1alpha1.AddToScheme(scheme)
-	if err != nil {
-		return nil, err
-	}
-	err = marketplacev1.SchemeBuilder.AddToScheme(scheme)
 	if err != nil {
 		return nil, err
 	}

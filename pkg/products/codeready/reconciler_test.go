@@ -24,7 +24,6 @@ import (
 	projectv1 "github.com/openshift/api/project/v1"
 
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	marketplacev1 "github.com/operator-framework/operator-marketplace/pkg/apis/operators/v1"
 
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
@@ -113,7 +112,6 @@ func buildScheme() *runtime.Scheme {
 	keycloak.SchemeBuilder.AddToScheme(scheme)
 	integreatlyv1alpha1.SchemeBuilder.AddToScheme(scheme)
 	operatorsv1alpha1.AddToScheme(scheme)
-	marketplacev1.SchemeBuilder.AddToScheme(scheme)
 	kafkav1alpha1.SchemeBuilder.AddToScheme(scheme)
 	corev1.SchemeBuilder.AddToScheme(scheme)
 	rbacv1.SchemeBuilder.AddToScheme(scheme)

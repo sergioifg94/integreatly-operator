@@ -16,7 +16,6 @@ import (
 	routev1 "github.com/openshift/api/route/v1"
 	coreosv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	marketplacev1 "github.com/operator-framework/operator-marketplace/pkg/apis/operators/v1"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8serr "k8s.io/apimachinery/pkg/api/errors"
@@ -406,10 +405,6 @@ func getBuildScheme() (*runtime.Scheme, error) {
 		return nil, err
 	}
 	err = apicuritov1alpha1.SchemeBuilder.AddToScheme(scheme)
-	if err != nil {
-		return nil, err
-	}
-	err = marketplacev1.SchemeBuilder.AddToScheme(scheme)
 	if err != nil {
 		return nil, err
 	}

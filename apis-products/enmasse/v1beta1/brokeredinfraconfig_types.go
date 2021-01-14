@@ -1,3 +1,6 @@
+// +kubebuilder:object:generate=false
+// +kubebuilder:skip
+// +kubebuilder:skipversion
 package v1beta1
 
 import (
@@ -43,8 +46,6 @@ type BrokeredInfraConfigStatus struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // BrokeredInfraConfig is the Schema for the brokeredinfraconfigs API
 // +k8s:openapi-gen=true
 type BrokeredInfraConfig struct {
@@ -54,8 +55,6 @@ type BrokeredInfraConfig struct {
 	Spec   BrokeredInfraConfigSpec   `json:"spec,omitempty"`
 	Status BrokeredInfraConfigStatus `json:"status,omitempty"`
 }
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // BrokeredInfraConfigList contains a list of BrokeredInfraConfig
 type BrokeredInfraConfigList struct {

@@ -1,3 +1,6 @@
+// +kubebuilder:object:generate=false
+// +kubebuilder:skip
+// +kubebuilder:skipversion
 package v1beta2
 
 import (
@@ -31,8 +34,6 @@ type AddressPlanResources struct {
 	Broker float32 `json:"broker"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // AddressPlan is the Schema for the addressplans API
 // +k8s:openapi-gen=true
 type AddressPlan struct {
@@ -42,8 +43,6 @@ type AddressPlan struct {
 	Spec   AddressPlanSpec   `json:"spec,omitempty"`
 	Status AddressPlanStatus `json:"status,omitempty"`
 }
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // AddressPlanList contains a list of AddressPlan
 type AddressPlanList struct {

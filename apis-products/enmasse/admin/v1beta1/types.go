@@ -3,6 +3,9 @@
  * License: Apache License 2.0 (see the file LICENSE or http://apache.org/licenses/LICENSE-2.0.html).
  */
 
+// +kubebuilder:object:generate=false
+// +kubebuilder:skip
+// +kubebuilder:skipversion
 package v1beta1
 
 import (
@@ -11,9 +14,6 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
-
-// +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type AuthenticationService struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -117,8 +117,6 @@ type AuthenticationServiceStatus struct {
 	ClientCertSecret *corev1.SecretReference    `json:"clientCertSecret,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 type AuthenticationServiceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
@@ -127,9 +125,6 @@ type AuthenticationServiceList struct {
 }
 
 // ** ConsoleService
-
-// +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type ConsoleService struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -173,8 +168,6 @@ type ConsoleServiceStatus struct {
 	Port         int                     `json:"port,omitempty"`
 	CaCertSecret *corev1.SecretReference `json:"caCertSecret,omitempty"`
 }
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type ConsoleServiceList struct {
 	metav1.TypeMeta `json:",inline"`

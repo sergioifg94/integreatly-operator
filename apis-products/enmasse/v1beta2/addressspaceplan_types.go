@@ -1,3 +1,6 @@
+// +kubebuilder:object:generate=false
+// +kubebuilder:skip
+// +kubebuilder:skipversion
 package v1beta2
 
 import (
@@ -33,10 +36,7 @@ type AddressSpacePlanResourceLimits struct {
 	Aggregate float32 `json:"aggregate"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // AddressSpacePlan is the Schema for the addressspaceplans API
-// +k8s:openapi-gen=true
 type AddressSpacePlan struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -44,8 +44,6 @@ type AddressSpacePlan struct {
 	Spec   AddressSpacePlanSpec   `json:"spec,omitempty"`
 	Status AddressSpacePlanStatus `json:"status,omitempty"`
 }
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // AddressSpacePlanList contains a list of AddressSpacePlan
 type AddressSpacePlanList struct {

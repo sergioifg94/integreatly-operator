@@ -1,3 +1,6 @@
+// +kubebuilder:object:generate=false
+// +kubebuilder:skip
+// +kubebuilder:skipversion
 package v1beta1
 
 import (
@@ -22,8 +25,6 @@ type StandardInfraConfigStatus struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 // StandardInfraConfig is the Schema for the standardinfraconfigs API
 // +k8s:openapi-gen=true
 type StandardInfraConfig struct {
@@ -33,8 +34,6 @@ type StandardInfraConfig struct {
 	Spec   StandardInfraConfigSpec   `json:"spec,omitempty"`
 	Status StandardInfraConfigStatus `json:"status,omitempty"`
 }
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // StandardInfraConfigList contains a list of StandardInfraConfig
 type StandardInfraConfigList struct {

@@ -869,12 +869,12 @@ func (r *Reconciler) reconcileSMTPCredentials(ctx context.Context, serverClient 
 		}
 
 		if smtpUpdated {
-			err = r.RolloutDeployment("system-app")
+			err = r.RolloutDeployment(ctx, "system-app")
 			if err != nil {
 				r.log.Error("Rollout system-app deployment", err)
 			}
 
-			err = r.RolloutDeployment("system-sidekiq")
+			err = r.RolloutDeployment(ctx, "system-sidekiq")
 			if err != nil {
 				r.log.Error("Rollout system-sidekiq deployment", err)
 			}
@@ -1644,13 +1644,13 @@ func (r *Reconciler) reconcileServiceDiscovery(ctx context.Context, serverClient
 	}
 
 	if status != controllerutil.OperationResultNone {
-		err = r.RolloutDeployment("system-app")
+		err = r.RolloutDeployment(ctx, "system-app")
 		if err != nil {
 			r.log.Error("Failed to rollout deployment (system-app)", err)
 			return integreatlyv1alpha1.PhaseInProgress, err
 		}
 
-		err = r.RolloutDeployment("system-sidekiq")
+		err = r.RolloutDeployment(ctx, "system-sidekiq")
 		if err != nil {
 			r.log.Error("Failed to rollout deployment (system-sidekiq)", err)
 			return integreatlyv1alpha1.PhaseInProgress, err
@@ -1797,12 +1797,12 @@ func (r *Reconciler) GetAdminToken(ctx context.Context, serverClient k8sclient.C
 	return &accessToken, nil
 }
 
-func (r *Reconciler) RolloutDeployment(name string) error {
-	_, err := r.appsv1Client.DeploymentConfigs(r.Config.GetNamespace()).Instantiate(name, &appsv1.DeploymentRequest{
+func (r *Reconciler) RolloutDeployment(ctx context.Context, name string) error {
+	_, err := r.appsv1Client.DeploymentConfigs(r.Config.GetNamespace()).Instantiate(ctx, name, &appsv1.DeploymentRequest{
 		Name:   name,
 		Force:  true,
 		Latest: true,
-	})
+	}, metav1.CreateOptions{})
 
 	return err
 }

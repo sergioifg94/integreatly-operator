@@ -32,7 +32,7 @@ func AddFinalizer(ctx context.Context, inst *integreatlyv1alpha1.RHMI, client k8
 
 // RemoveOauthClient deletes an oauth client by name
 func RemoveOauthClient(oauthClient oauthClient.OauthV1Interface, oauthClientName string) error {
-	err := oauthClient.OAuthClients().Delete(oauthClientName, &metav1.DeleteOptions{})
+	err := oauthClient.OAuthClients().Delete(context.TODO(), oauthClientName, metav1.DeleteOptions{})
 	if err != nil && !k8serr.IsNotFound(err) {
 		logrus.Error("Error cleaning up oauth client", err)
 		return err

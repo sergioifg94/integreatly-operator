@@ -291,8 +291,6 @@ func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 
 	err = r.updateStatusAndObject(log, originalInstallation, installation)
 	return retryRequeue, err
-
-	return ctrl.Result{}, nil
 }
 
 func (r *RHMIReconciler) reconcilePodDistribution(installation *rhmiv1alpha1.RHMI) {

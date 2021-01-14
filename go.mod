@@ -37,7 +37,7 @@ require (
 	github.com/openshift/client-go v3.9.0+incompatible
 	github.com/openshift/cluster-samples-operator v0.0.0-20191113195805-9e879e661d71
 	github.com/operator-framework/operator-lifecycle-manager v3.11.0+incompatible
-	github.com/operator-framework/operator-marketplace v0.0.0-20200919233811-2d6d71892437
+	// github.com/operator-framework/operator-marketplace v0.0.0-20200919233811-2d6d71892437
 	github.com/operator-framework/operator-registry v1.14.3
 	github.com/operator-framework/operator-sdk v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1

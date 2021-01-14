@@ -3,6 +3,9 @@
  * License: Apache License 2.0 (see the file LICENSE or http://apache.org/licenses/LICENSE-2.0.html).
  */
 
+// +kubebuilder:object:generate=false
+// +kubebuilder:skip
+// +kubebuilder:skipversion
 package v1beta1
 
 import (
@@ -20,7 +23,6 @@ import (
 
 // +genclient
 // +genclient:nonNamespaced
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type AddressSpaceSchema struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -34,8 +36,6 @@ type AddressSpaceSchemaSpec struct {
 	Description            string   `json:"description,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 type AddressSpaceSchemaList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
@@ -46,7 +46,6 @@ type AddressSpaceSchemaList struct {
 // ** AuthenticationService
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type AuthenticationService struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -66,8 +65,6 @@ type AuthenticationServiceSettings struct {
 	ClientCertSecret *corev1.SecretReference `json:"clientCertSecret,omitempty"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 type AuthenticationServiceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
@@ -78,7 +75,6 @@ type AuthenticationServiceList struct {
 // ** AddressSpace
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type AddressSpace struct {
 	metav1.TypeMeta   `json:",inline"`
@@ -193,8 +189,6 @@ type RouterStatus struct {
 	Undelivered int      `json:"undelivered"`
 }
 
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-
 type AddressSpaceList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
@@ -205,7 +199,6 @@ type AddressSpaceList struct {
 // ** Address
 
 // +genclient
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +genclient:noStatus
 
 type Address struct {
@@ -274,8 +267,6 @@ type ForwarderStatus struct {
 	IsReady  bool     `json:"isReady"`
 	Messages []string `json:"messages,omitempty"`
 }
-
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 type AddressList struct {
 	metav1.TypeMeta `json:",inline"`

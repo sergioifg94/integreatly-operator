@@ -44,8 +44,8 @@ type RHMIConfigReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=rhmiconfig.integreatly.org,resources=rhmiconfigs,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=rhmiconfig.integreatly.org,resources=rhmiconfigs/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=integreatly.org,resources=rhmiconfigs,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=integreatly.org,resources=rhmiconfigs/status,verbs=get;update;patch
 
 func (r *RHMIConfigReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()

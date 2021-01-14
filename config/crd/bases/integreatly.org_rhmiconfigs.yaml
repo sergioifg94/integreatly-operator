@@ -6,9 +6,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.3.0
   creationTimestamp: null
-  name: rhmiconfigs.rhmi.integreatly.org
+  name: rhmiconfigs.integreatly.org
 spec:
-  group: rhmi.integreatly.org
+  group: integreatly.org
   names:
     kind: RHMIConfig
     listKind: RHMIConfigList

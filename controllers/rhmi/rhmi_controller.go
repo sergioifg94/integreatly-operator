@@ -102,8 +102,8 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 	}
 }
 
-// +kubebuilder:rbac:groups=rhmi.integreatly.org,resources=rhmis,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=rhmi.integreatly.org,resources=rhmis/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=integreatly.org,resources=rhmis,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=integreatly.org,resources=rhmis/status,verbs=get;update;patch
 
 func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()

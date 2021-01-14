@@ -2,8 +2,8 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/rhmi.integreatly.org_rhmis.yaml
-- bases/rhmiconfig.integreatly.org_rhmiconfigs.yaml
+- bases/integreatly.org_rhmis.yaml
+- bases/integreatly.org_rhmiconfigs.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

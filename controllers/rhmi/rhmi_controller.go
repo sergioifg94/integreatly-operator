@@ -509,9 +509,9 @@ func (r *RHMIReconciler) preflightChecks(installation *rhmiv1alpha1.RHMI, instal
 			_, err := strconv.ParseBool(s)
 			return err
 		}),
-		integreatlyv1alpha1.EnvKeyAlertSMTPFrom: requiredEnvVar(func(s string) error {
+		rhmiv1alpha1.EnvKeyAlertSMTPFrom: requiredEnvVar(func(s string) error {
 			if s == "" {
-				return fmt.Errorf(" env var %s is required ", integreatlyv1alpha1.EnvKeyAlertSMTPFrom)
+				return fmt.Errorf(" env var %s is required ", rhmiv1alpha1.EnvKeyAlertSMTPFrom)
 			}
 			return nil
 		}),

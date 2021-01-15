@@ -227,7 +227,9 @@ func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 		metrics.SetRhmiVersions(string(installation.Status.Stage), installation.Status.Version, installation.Status.ToVersion, installation.CreationTimestamp.Unix())
 	}
 
-	alertsClient, err := k8sclient.New(r.mgr.GetConfig(), k8sclient.Options{})
+	alertsClient, err := k8sclient.New(r.mgr.GetConfig(), k8sclient.Options{
+		Scheme: r.mgr.GetScheme(),
+	})
 	if err != nil {
 		return ctrl.Result{}, fmt.Errorf("error creating client for alerts: %v", err)
 	}
@@ -398,7 +400,9 @@ func (r *RHMIReconciler) handleUninstall(log logr.Logger, installation *rhmiv1al
 				if err != nil {
 					merr.Add(fmt.Errorf("Failed to build reconciler for product %s: %w", productName, err))
 				}
-				serverClient, err := k8sclient.New(r.restConfig, k8sclient.Options{})
+				serverClient, err := k8sclient.New(r.restConfig, k8sclient.Options{
+					Scheme: r.mgr.GetScheme(),
+				})
 				if err != nil {
 					merr.Add(fmt.Errorf("Failed to create server client for %s: %w", productName, err))
 				}
@@ -593,7 +597,9 @@ func (r *RHMIReconciler) checkNamespaceForProducts(log logr.Logger, ns corev1.Na
 		return foundProducts, nil
 	}
 	// new client to avoid caching issues
-	serverClient, _ := k8sclient.New(r.restConfig, k8sclient.Options{})
+	serverClient, _ := k8sclient.New(r.restConfig, k8sclient.Options{
+		Scheme: r.mgr.GetScheme(),
+	})
 	for _, stage := range installationType.InstallStages {
 		for _, product := range stage.Products {
 			reconciler, err := products.NewReconciler(product.Name, r.restConfig, configManager, installation, r.mgr)
@@ -624,7 +630,9 @@ func (r *RHMIReconciler) bootstrapStage(installation *rhmiv1alpha1.RHMI, configM
 	if err != nil {
 		return rhmiv1alpha1.PhaseFailed, fmt.Errorf("failed to build a reconciler for Bootstrap: %w", err)
 	}
-	serverClient, err := k8sclient.New(r.restConfig, k8sclient.Options{})
+	serverClient, err := k8sclient.New(r.restConfig, k8sclient.Options{
+		Scheme: r.mgr.GetScheme(),
+	})
 	if err != nil {
 		return rhmiv1alpha1.PhaseFailed, fmt.Errorf("could not create server client: %w", err)
 	}
@@ -654,7 +662,9 @@ func (r *RHMIReconciler) processStage(installation *rhmiv1alpha1.RHMI, stage *St
 			productVersionMismatchFound = true
 		}
 
-		serverClient, err := k8sclient.New(r.restConfig, k8sclient.Options{})
+		serverClient, err := k8sclient.New(r.restConfig, k8sclient.Options{
+			Scheme: r.mgr.GetScheme(),
+		})
 		if err != nil {
 			return rhmiv1alpha1.PhaseFailed, fmt.Errorf("could not create server client: %w", err)
 		}
@@ -735,8 +745,11 @@ func (r *RHMIReconciler) handleCROConfigDeletion(rhmi rhmiv1alpha1.RHMI) error {
 
 func (r *RHMIReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	// Creates a new managed install CR if it is not available
-	kubeConfig := controllerruntime.GetConfigOrDie()
-	client, err := k8sclient.New(kubeConfig, k8sclient.Options{})
+	// kubeConfig := controllerruntime.GetConfigOrDie()
+	kubeConfig := mgr.GetConfig()
+	client, err := k8sclient.New(kubeConfig, k8sclient.Options{
+		Scheme: mgr.GetScheme(),
+	})
 	err = r.createInstallationCR(context.Background(), client)
 	if err != nil {
 		return err

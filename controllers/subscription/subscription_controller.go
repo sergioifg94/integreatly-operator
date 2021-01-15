@@ -80,7 +80,9 @@ func New(mgr manager.Manager) (*SubscriptionReconciler, error) {
 
 	webappNotifierClient := webapp.NewLazyUpgradeNotifier(func() (k8sclient.Client, error) {
 		restConfig := controllerruntime.GetConfigOrDie()
-		return k8sclient.New(restConfig, k8sclient.Options{})
+		return k8sclient.New(restConfig, k8sclient.Options{
+			Scheme: mgr.GetScheme(),
+		})
 	})
 
 	csvLocator := csvlocator.NewCachedCSVLocator(csvlocator.NewConditionalCSVLocator(

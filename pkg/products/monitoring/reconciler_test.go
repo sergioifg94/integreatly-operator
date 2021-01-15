@@ -5,8 +5,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	configv1 "github.com/openshift/api/config/v1"
 	"testing"
+
+	configv1 "github.com/openshift/api/config/v1"
 
 	v1 "github.com/openshift/api/route/v1"
 	"github.com/sirupsen/logrus"

@@ -20,7 +20,6 @@ import (
 
 	marin3roperator "github.com/3scale/marin3r/apis/operator/v1alpha1"
 	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
-	"github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	marin3rconfig "github.com/integr8ly/integreatly-operator/pkg/products/marin3r/config"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
@@ -263,12 +262,12 @@ func (r *Reconciler) reconcileAlerts(ctx context.Context, client k8sclient.Clien
 
 	granafaConsoleURL, err := grafana.GetGrafanaConsoleURL(ctx, client, installation)
 	if err != nil {
-		if productsStage, ok := installation.Status.Stages[v1alpha1.ProductsStage]; ok {
+		if productsStage, ok := installation.Status.Stages[integreatlyv1alpha1.ProductsStage]; ok {
 			if productsStage.Products != nil {
-				grafanaProduct, grafanaProductExists := productsStage.Products[v1alpha1.ProductGrafana]
+				grafanaProduct, grafanaProductExists := productsStage.Products[integreatlyv1alpha1.ProductGrafana]
 				// Ignore the Forbidden and NotFound errors if Grafana is not installed yet
 				if !grafanaProductExists ||
-					(grafanaProduct.Status != v1alpha1.PhaseCompleted &&
+					(grafanaProduct.Status != integreatlyv1alpha1.PhaseCompleted &&
 						(k8serr.IsForbidden(err) || k8serr.IsNotFound(err))) {
 
 					logrus.Info("Failed to get Grafana console URL. Awaiting completion of Grafana installation")

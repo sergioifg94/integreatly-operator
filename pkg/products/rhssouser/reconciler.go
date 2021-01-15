@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	testResources "github.com/integr8ly/integreatly-operator/test/resources"
-
 	"github.com/integr8ly/integreatly-operator/pkg/products/rhssocommon"
 
 	"github.com/integr8ly/integreatly-operator/version"

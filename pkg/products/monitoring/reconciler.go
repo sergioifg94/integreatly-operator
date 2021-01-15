@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	configv1 "github.com/openshift/api/config/v1"
 	"os"
 	"strings"
+
+	configv1 "github.com/openshift/api/config/v1"
 
 	prometheus "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/operator-framework/operator-registry/pkg/lib/bundle"

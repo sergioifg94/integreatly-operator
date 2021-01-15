@@ -1856,6 +1856,8 @@ func userIsOpenshiftAdmin(tsUser *User, adminGroup *usersv1.Group) bool {
 }
 
 func (r *Reconciler) getKeycloakClientSpec(id, clientSecret string) keycloak.KeycloakClientSpec {
+	fullScopeAllowed := true
+
 	return keycloak.KeycloakClientSpec{
 		RealmSelector: &metav1.LabelSelector{
 			MatchLabels: rhsso.GetInstanceLabels(),
@@ -1871,7 +1873,7 @@ func (r *Reconciler) getKeycloakClientSpec(id, clientSecret string) keycloak.Key
 			},
 			StandardFlowEnabled: true,
 			RootURL:             fmt.Sprintf("https://3scale-admin.%s", r.installation.Spec.RoutingSubdomain),
-			FullScopeAllowed:    true,
+			FullScopeAllowed:    &fullScopeAllowed,
 			Access: map[string]bool{
 				"view":      true,
 				"configure": true,

@@ -26,7 +26,7 @@ require (
 	github.com/integr8ly/grafana-operator v2.0.0+incompatible
 	github.com/integr8ly/grafana-operator/v3 v3.6.0
 	github.com/integr8ly/keycloak-client v0.1.3
-	github.com/keycloak/keycloak-operator v0.0.0-20201214103814-d5fb27b4d916
+	github.com/keycloak/keycloak-operator v0.0.0-20210115090828-e5d4686bb8a4
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.2
 	github.com/openshift/api v3.9.1-0.20191031084152-11eee842dafd+incompatible
@@ -97,4 +97,3 @@ replace github.com/Microsoft/hcsshim => github.com/Microsoft/hcsshim v0.8.14
 replace github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
 
 replace github.com/integr8ly/cloud-resource-operator => /home/sergio/Documents/Go/src/github.com/integr8ly/cloud-resource-operator
-replace github.com/keycloak/keycloak-operator => /home/sergio/Documents/Go/src/github.com/keycloak/keycloak-operator

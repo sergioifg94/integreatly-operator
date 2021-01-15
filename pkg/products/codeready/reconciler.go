@@ -497,6 +497,8 @@ func (r *Reconciler) preUpgradeBackupExecutor() backup.BackupExecutor {
 }
 
 func getKeycloakClientSpec(cheURL string) keycloak.KeycloakClientSpec {
+	fullScopeAllowed := true
+
 	return keycloak.KeycloakClientSpec{
 		RealmSelector: &metav1.LabelSelector{
 			MatchLabels: rhsso.GetInstanceLabels(),
@@ -512,7 +514,7 @@ func getKeycloakClientSpec(cheURL string) keycloak.KeycloakClientSpec {
 			WebOrigins:                []string{cheURL, fmt.Sprintf("%s/*", cheURL)},
 			StandardFlowEnabled:       true,
 			RootURL:                   cheURL,
-			FullScopeAllowed:          true,
+			FullScopeAllowed:          &fullScopeAllowed,
 			Access: map[string]bool{
 				"view":      true,
 				"configure": true,

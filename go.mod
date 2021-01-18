@@ -22,7 +22,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/googleapis/gnostic v0.5.3 // indirect
 	github.com/integr8ly/application-monitoring-operator v1.4.0
-	github.com/integr8ly/cloud-resource-operator v0.22.3
+	github.com/integr8ly/cloud-resource-operator v0.23.1-0.20210118104111-b5c5799f313c
 	github.com/integr8ly/grafana-operator v2.0.0+incompatible
 	github.com/integr8ly/grafana-operator/v3 v3.6.0
 	github.com/integr8ly/keycloak-client v0.1.3
@@ -96,4 +96,3 @@ replace github.com/Microsoft/hcsshim => github.com/Microsoft/hcsshim v0.8.14
 
 replace github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
 
-replace github.com/integr8ly/cloud-resource-operator => /home/sergio/Documents/Go/src/github.com/integr8ly/cloud-resource-operator

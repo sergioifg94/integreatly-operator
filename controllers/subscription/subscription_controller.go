@@ -120,14 +120,11 @@ type SubscriptionReconciler struct {
 	csvLocator          csvlocator.CSVLocator
 }
 
-// +kubebuilder:rbac:groups=operators.coreos.com,resources=subscriptions;subscriptions/status,verbs=get;list;watch;update;patch;delete,namespace=redhat-rhmi-operator
-// +kubebuilder:rbac:groups=operators.coreos.com,resources=subscriptions;subscriptions/status,verbs=get;list;watch;update;patch;delete,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=subscriptions;subscriptions/status,verbs=get;list;watch;update;patch;delete,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=operators.coreos.com,resources=installplans,verbs=get;list;watch;update;patch;delete,namespace=redhat-rhmi-operator
-// +kubebuilder:rbac:groups=operators.coreos.com,resources=installplans,verbs=get;list;watch;update;patch;delete,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=installplans,verbs=get;list;watch;update;patch;delete,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=operators.coreos.com,resources=clusterserviceversions,verbs=get;delete;list,namespace=redhat-rhmi-operator
-// +kubebuilder:rbac:groups=operators.coreos.com,resources=clusterserviceversions,verbs=get;delete;list,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=clusterserviceversions,verbs=get;delete;list,namespace=integreatly-operator
 
 // Reconcile will ensure that that Subscription object(s) have Manual approval for the upgrades
 // In a namespaced installation of integreatly operator it will only reconcile Subscription of the integreatly operator itself

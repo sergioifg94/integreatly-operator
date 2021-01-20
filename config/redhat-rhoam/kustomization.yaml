@@ -1,0 +1,6 @@
+bases:
+  - ../default
+
+namespace: redhat-rhoam-operator
+
+namePrefix: rhoam-

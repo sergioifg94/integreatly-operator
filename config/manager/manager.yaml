@@ -1,14 +1,7 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    control-plane: controller-manager
-  name: system
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: controller-manager
+  name: operator
   namespace: system
   labels:
     control-plane: controller-manager
@@ -16,11 +9,13 @@ spec:
   selector:
     matchLabels:
       control-plane: controller-manager
+      name: rhmi-operator
   replicas: 1
   template:
     metadata:
       labels:
         control-plane: controller-manager
+        name: rhmi-operator
     spec:
       containers:
       - command:
@@ -28,17 +23,40 @@ spec:
         args:
         - --enable-leader-election
         image: controller:latest
-        name: manager
+        name: rhmi-operator
+        ports:
+          - containerPort: 8090
+        imagePullPolicy: Always
         resources:
           limits:
-            cpu: 100m
-            memory: 30Mi
+            cpu: 150m
+            memory: 1536Mi
           requests:
             cpu: 100m
-            memory: 20Mi
+            memory: 64Mi
+        volumeMounts:
+        - name: webhook-certs
+          mountPath: "/etc/ssl/certs/webhook"
         env:
           - name: WATCH_NAMESPACE
             valueFrom:
               fieldRef:
                 fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: OPERATOR_NAME
+            value: "rhmi-operator"
+          - name: USE_CLUSTER_STORAGE
+            value: "true"
+          - name: LOG_LEVEL
+            value: "info"
+          - name: INSTALLATION_TYPE
+            value: "managed"
+          - name: REBALANCE_PODS
+            value: "true"
+          # this should be set for production and development via MT repo
+          - name: ALERT_SMTP_FROM
+            value: "default@test.com"
       terminationGracePeriodSeconds: 10

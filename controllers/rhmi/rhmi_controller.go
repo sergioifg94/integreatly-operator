@@ -175,33 +175,25 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 
 // Role permissions
 
-// +kubebuilder:rbac:groups="",resources=pods;events;configmaps;secrets,verbs=list;get;watch;create;update;patch,namespace=redhat-rhmi-operator
-// +kubebuilder:rbac:groups="",resources=pods;events;configmaps;secrets,verbs=list;get;watch;create;update;patch,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups="",resources=pods;events;configmaps;secrets,verbs=list;get;watch;create;update;patch,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups="",resources=configmaps,verbs=delete,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups="",resources=configmaps,verbs=delete,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups="",resources=configmaps,verbs=delete,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups="",resources=services;services/finalizers,verbs=get;create;list;watch;update;delete,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups="",resources=services;services/finalizers,verbs=get;create;list;watch;update;delete,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups="",resources=services;services/finalizers,verbs=get;create;list;watch;update;delete,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=servicemonitors,verbs=get;create,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=servicemonitors,verbs=get;create,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=servicemonitors,verbs=get;create,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=apps,resources=deployments/finalizers;replicasets;statefulsets,verbs=update;get,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups=apps,resources=deployments/finalizers;replicasets;statefulsets,verbs=update;get,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups=apps,resources=deployments/finalizers;replicasets;statefulsets,verbs=update;get,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=prometheusrules,verbs=get;list;create;update;delete;watch,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=prometheusrules,verbs=get;list;create;update;delete;watch,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups=monitoring.coreos.com,resources=prometheusrules,verbs=get;list;create;update;delete;watch,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles;rolebindings,verbs=get;list;create;update;delete;watch,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles;rolebindings,verbs=get;list;create;update;delete;watch,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles;rolebindings,verbs=get;list;create;update;delete;watch,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups="",resources=pods;services;endpoints,verbs=get;list;watch,namespace=redhat-rhoam-operator
-// +kubebuilder:rbac:groups="",resources=pods;services;endpoints,verbs=get;list;watch,namespace=redhat-rhmi-operator
+// +kubebuilder:rbac:groups="",resources=pods;services;endpoints,verbs=get;list;watch,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=marin3r.3scale.net,resources=envoyconfigs,verbs=get;list;watch;create;update;delete,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=marin3r.3scale.net,resources=envoyconfigs,verbs=get;list;watch;create;update;delete,namespace=integreatly-operator
 
-// +kubebuilder:rbac:groups=operator.marin3r.3scale.net,resources=discoveryservices,verbs=get;list;watch;create;update;delete,namespace=redhat-rhoam-operator
+// +kubebuilder:rbac:groups=operator.marin3r.3scale.net,resources=discoveryservices,verbs=get;list;watch;create;update;delete,namespace=integreatly-operator
 
 func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()

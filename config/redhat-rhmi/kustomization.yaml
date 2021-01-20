@@ -1,0 +1,6 @@
+bases:
+  - ../default
+
+namespace: redhat-rhmi-operator
+
+namePrefix: rhmi-

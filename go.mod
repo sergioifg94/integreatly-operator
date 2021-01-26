@@ -8,6 +8,7 @@ require (
 	github.com/3scale/marin3r v0.6.0
 	github.com/Apicurio/apicurio-registry-operator v0.0.0-20200903111206-f9f14054bc16
 	github.com/Masterminds/semver v1.5.0
+	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/RHsyseng/operator-utils v0.0.0-20200709142328-d5a5812a443f
 	github.com/aerogear/unifiedpush-operator v0.5.0
 	github.com/apicurio/apicurio-operators/apicurito v0.0.0-20200123142409-83e0a91dd6be
@@ -20,12 +21,16 @@ require (
 	github.com/go-logr/logr v0.3.0
 	github.com/go-openapi/spec v0.19.12
 	github.com/golang/protobuf v1.4.3
+	github.com/google/go-querystring v1.0.0
 	github.com/googleapis/gnostic v0.5.3 // indirect
+	github.com/headzoo/surf v1.0.0
+	github.com/headzoo/ut v0.0.0-20181013193318-a13b5a7a02ca // indirect
 	github.com/integr8ly/application-monitoring-operator v1.4.0
 	github.com/integr8ly/cloud-resource-operator v0.23.1-0.20210118104111-b5c5799f313c
 	github.com/integr8ly/grafana-operator v2.0.0+incompatible
 	github.com/integr8ly/grafana-operator/v3 v3.6.0
 	github.com/integr8ly/keycloak-client v0.1.3
+	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/keycloak/keycloak-operator v0.0.0-20210115090828-e5d4686bb8a4
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.2
@@ -39,6 +44,7 @@ require (
 	github.com/prometheus/client_golang v1.7.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/syndesisio/syndesis/install/operator v0.0.0-20201210151747-8264b9904eab
+	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 	google.golang.org/protobuf v1.24.0
 	gopkg.in/yaml.v2 v2.3.0

@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	"github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 )
 
 // All tests are be linked[1] to the integreatly-test-cases[2] repo by using the same ID
@@ -16,12 +16,12 @@ var (
 
 	HAPPY_PATH_TESTS = []TestSuite{
 		//Add all happy path tests to be executed after RHMI installation is completed here
-		{
-			[]TestCase{
-				{"F06 - Verify Replicas Scale correctly in Apicurito", TestReplicasInApicurito},
-			},
-			[]v1alpha1.InstallationType{v1alpha1.InstallationTypeManaged},
-		},
+		// {
+		// 	[]TestCase{
+		// 		{"F06 - Verify Replicas Scale correctly in Apicurito", TestReplicasInApicurito},
+		// 	},
+		// 	[]v1alpha1.InstallationType{v1alpha1.InstallationTypeManaged},
+		// },
 		{
 			[]TestCase{
 				{"E09 - Verify customer dashboards exist", TestIntegreatlyCustomerDashboardsExist},
@@ -29,44 +29,44 @@ var (
 			},
 			[]v1alpha1.InstallationType{v1alpha1.InstallationTypeManagedApi},
 		},
-		{
-			[]TestCase{
-				// Keep test as first on the list, as it ensures that all products are reported as complete
-				{"A01 - Verify that all stages in the integreatly-operator CR report completed", TestIntegreatlyStagesStatus},
-				{"Test RHMI installation CR metric", TestRHMICRMetrics},
-				{"A03 - Verify all namespaces have been created with the correct name", TestNamespaceCreated},
-				{"A05 - Verify product operator version", TestProductOperatorVersions},
-				{"A06 - Verify PVC", TestPVClaims},
-				{"A07 - Verify product versions", TestProductVersions},
-				{"A08 - Verify all products routes are created", TestIntegreatlyRoutesExist},
-				{"A09 - Verify Subscription Install Plan Strategy", TestSubscriptionInstallPlanType},
-				{"A10 - Verify CRO Postgres CRs Successful", TestCROPostgresSuccessfulState},
-				{"A11 - Verify CRO Redis CRs Successful", TestCRORedisSuccessfulState},
-				{"A12 - Verify CRO BlobStorage CRs Successful", TestCROBlobStorageSuccessfulState},
-				{"A13 - Verify Deployment resources have the expected replicas", TestDeploymentExpectedReplicas},
-				{"A14 - Verify Deployment Config resources have the expected replicas", TestDeploymentConfigExpectedReplicas},
-				{"A15 - Verify Stateful Set resources have the expected replicas", TestStatefulSetsExpectedReplicas},
-				{"A18 - Verify RHMI Config CRs Successful", TestRHMIConfigCRs},
-				{"A22 - Verify RHMI Config Updates CRO Strategy Override Config Map", TestRHMIConfigCROStrategyOverride},
-				/*FLAKY on RHMI and RHOAM in PROW*/ {"A26 - Verify Sendgrid Credentials Are Configured Properly", TestSendgridCredentialsAreValid},
-				/*FLAKY on RHMI*/ {"C01 - Verify Alerts are not pending or firing apart from DeadMansSwitch", TestIntegreatlyAlertsPendingOrFiring},
-				{"C04 - Verify Alerts exist", TestIntegreatlyAlertsExist},
-				{"E01 - Verify Middleware Grafana Route is accessible", TestGrafanaExternalRouteAccessible},
-				{"E02 - Verify that all dashboards are installed and all the graphs are filled with data", TestDashboardsData},
-				{"E03 - Verify middleware dashboards exist", TestIntegreatlyMiddelewareDashboardsExist},
-				/*FLAKY on RHMI/RHOAM*/ {"E05 - Verify Grafana Route returns dashboards", TestGrafanaExternalRouteDashboardExist},
-				{"F02 - Verify PodDisruptionBudgets exist", TestIntegreatlyPodDisruptionBudgetsExist},
-				{"F05 - Verify Replicas Scale correctly in Threescale", TestReplicasInThreescale},
-				{"F08 - Verify Replicas Scale correctly in RHSSO", TestReplicasInRHSSO},
-				{"F08 - Verify Replicas Scale correctly in User SSO", TestReplicasInUserSSO},
-				{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
-				/*FLAKY on RHMI*/ {"Verify Alerts are not firing during or after installation apart from DeadMansSwitch", TestIntegreatlyAlertsFiring},
-				/*FLAKY*/ {"C03 - Verify that alerting mechanism works", TestIntegreatlyAlertsMechanism},
-				{"Verify prometheus metrics scrapped", TestMetricsScrappedByPrometheus},
-				{"A27 + A28 - Verify pod priority class is created and set", TestPriorityClass},
-			},
-			[]v1alpha1.InstallationType{v1alpha1.InstallationTypeManaged, v1alpha1.InstallationTypeManagedApi},
-		},
+		// {
+		// 	[]TestCase{
+		// 		// Keep test as first on the list, as it ensures that all products are reported as complete
+		// 		{"A01 - Verify that all stages in the integreatly-operator CR report completed", TestIntegreatlyStagesStatus},
+		// 		{"Test RHMI installation CR metric", TestRHMICRMetrics},
+		// 		{"A03 - Verify all namespaces have been created with the correct name", TestNamespaceCreated},
+		// 		{"A05 - Verify product operator version", TestProductOperatorVersions},
+		// 		{"A06 - Verify PVC", TestPVClaims},
+		// 		{"A07 - Verify product versions", TestProductVersions},
+		// 		{"A08 - Verify all products routes are created", TestIntegreatlyRoutesExist},
+		// 		{"A09 - Verify Subscription Install Plan Strategy", TestSubscriptionInstallPlanType},
+		// 		{"A10 - Verify CRO Postgres CRs Successful", TestCROPostgresSuccessfulState},
+		// 		{"A11 - Verify CRO Redis CRs Successful", TestCRORedisSuccessfulState},
+		// 		{"A12 - Verify CRO BlobStorage CRs Successful", TestCROBlobStorageSuccessfulState},
+		// 		{"A13 - Verify Deployment resources have the expected replicas", TestDeploymentExpectedReplicas},
+		// 		{"A14 - Verify Deployment Config resources have the expected replicas", TestDeploymentConfigExpectedReplicas},
+		// 		{"A15 - Verify Stateful Set resources have the expected replicas", TestStatefulSetsExpectedReplicas},
+		// 		{"A18 - Verify RHMI Config CRs Successful", TestRHMIConfigCRs},
+		// 		{"A22 - Verify RHMI Config Updates CRO Strategy Override Config Map", TestRHMIConfigCROStrategyOverride},
+		// 		/*FLAKY on RHMI and RHOAM in PROW*/ {"A26 - Verify Sendgrid Credentials Are Configured Properly", TestSendgridCredentialsAreValid},
+		// 		/*FLAKY on RHMI*/ {"C01 - Verify Alerts are not pending or firing apart from DeadMansSwitch", TestIntegreatlyAlertsPendingOrFiring},
+		// 		{"C04 - Verify Alerts exist", TestIntegreatlyAlertsExist},
+		// 		{"E01 - Verify Middleware Grafana Route is accessible", TestGrafanaExternalRouteAccessible},
+		// 		{"E02 - Verify that all dashboards are installed and all the graphs are filled with data", TestDashboardsData},
+		// 		{"E03 - Verify middleware dashboards exist", TestIntegreatlyMiddelewareDashboardsExist},
+		// 		/*FLAKY on RHMI/RHOAM*/ {"E05 - Verify Grafana Route returns dashboards", TestGrafanaExternalRouteDashboardExist},
+		// 		{"F02 - Verify PodDisruptionBudgets exist", TestIntegreatlyPodDisruptionBudgetsExist},
+		// 		{"F05 - Verify Replicas Scale correctly in Threescale", TestReplicasInThreescale},
+		// 		{"F08 - Verify Replicas Scale correctly in RHSSO", TestReplicasInRHSSO},
+		// 		{"F08 - Verify Replicas Scale correctly in User SSO", TestReplicasInUserSSO},
+		// 		{"Verify servicemonitors are cloned in monitoring namespace and rolebindings are created", TestServiceMonitorsCloneAndRolebindingsExist},
+		// 		/*FLAKY on RHMI*/ {"Verify Alerts are not firing during or after installation apart from DeadMansSwitch", TestIntegreatlyAlertsFiring},
+		// 		/*FLAKY*/ {"C03 - Verify that alerting mechanism works", TestIntegreatlyAlertsMechanism},
+		// 		{"Verify prometheus metrics scrapped", TestMetricsScrappedByPrometheus},
+		// 		{"A27 + A28 - Verify pod priority class is created and set", TestPriorityClass},
+		// 	},
+		// 	[]v1alpha1.InstallationType{v1alpha1.InstallationTypeManaged, v1alpha1.InstallationTypeManagedApi},
+		// },
 	}
 
 	IDP_BASED_TESTS = []TestSuite{

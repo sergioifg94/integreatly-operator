@@ -2,6 +2,7 @@ package functional
 
 import (
 	"fmt"
+	"testing"
 
 	. "github.com/onsi/ginkgo"
 	"github.com/onsi/ginkgo/reporters"
@@ -34,7 +35,7 @@ var testEnv *envtest.Environment
 var installType string
 var err error
 
-func TestAPIs(t common.TestingTB) {
+func TestAPIs(t *testing.T) {
 	RegisterFailHandler(Fail)
 
 	// start test env

@@ -4,7 +4,7 @@ import (
 	upsv1alpha1 "github.com/aerogear/unifiedpush-operator/pkg/apis/push/v1alpha1"
 	monitoring "github.com/integr8ly/application-monitoring-operator/pkg/apis/applicationmonitoring/v1alpha1"
 
-	envoyconfigv1 "github.com/3scale/marin3r/apis/envoy/v1alpha1"
+	envoyconfigv1 "github.com/3scale/marin3r/apis/marin3r/v1alpha1"
 	discoveryservicev1 "github.com/3scale/marin3r/apis/operator/v1alpha1"
 	prometheusmonitoringv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 

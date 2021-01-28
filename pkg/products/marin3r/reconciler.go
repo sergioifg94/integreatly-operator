@@ -359,17 +359,16 @@ func (r *Reconciler) reconcileDiscoveryService(ctx context.Context, client k8scl
 		return integreatlyv1alpha1.PhaseFailed, errors.Wrap(err, "could not read 3scale config from marin3r reconciler")
 	}
 
-	enabledNamespaces := []string{threescaleConfig.GetNamespace()}
 	discoveryService := &marin3roperator.DiscoveryService{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: discoveryServiceName,
+			Name:      discoveryServiceName,
+			Namespace: threescaleConfig.GetNamespace(),
 		},
 	}
 
 	_, err = controllerutil.CreateOrUpdate(ctx, client, discoveryService, func() error {
-		discoveryService.Spec.DiscoveryServiceNamespace = productNamespace
-		discoveryService.Spec.EnabledNamespaces = enabledNamespaces
-		discoveryService.Spec.Image = fmt.Sprintf("quay.io/3scale/marin3r:v%s", integreatlyv1alpha1.VersionMarin3r)
+		image := fmt.Sprintf("quay.io/3scale/marin3r:v%s", integreatlyv1alpha1.VersionMarin3r)
+		discoveryService.Spec.Image = &image
 		return nil
 	})
 	if err != nil {

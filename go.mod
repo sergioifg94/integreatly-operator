@@ -5,7 +5,7 @@ go 1.13
 require (
 	github.com/3scale/3scale-operator v0.6.0
 	// github.com/3scale/3scale-operator v0.2.1-0.20200730110533-c3b57b704d73
-	github.com/3scale/marin3r v0.6.0
+	github.com/3scale/marin3r v0.7.0
 	github.com/Apicurio/apicurio-registry-operator v0.0.0-20200903111206-f9f14054bc16
 	github.com/Masterminds/semver v1.5.0
 	github.com/PuerkitoBio/goquery v1.6.1
@@ -16,7 +16,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/coreos/prometheus-operator v0.40.0
 	github.com/eclipse/che-operator v0.0.0-20201214125341-cce874092f25
-	github.com/envoyproxy/go-control-plane v0.9.5
+	github.com/envoyproxy/go-control-plane v0.9.7
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
 	github.com/go-logr/logr v0.3.0
 	github.com/go-openapi/spec v0.19.12
@@ -29,10 +29,8 @@ require (
 	github.com/integr8ly/cloud-resource-operator v0.23.1-0.20210118104111-b5c5799f313c
 	github.com/integr8ly/grafana-operator v2.0.0+incompatible
 	github.com/integr8ly/grafana-operator/v3 v3.6.0
-	github.com/integr8ly/keycloak-client v0.1.3
-	github.com/jstemmer/go-junit-report v0.9.1
+	github.com/integr8ly/keycloak-client v0.1.3-0.20210125112511-1972ece81982
 	github.com/keycloak/keycloak-operator v0.0.0-20210115090828-e5d4686bb8a4
-	github.com/matryer/moq v0.1.4 // indirect
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.2
 	github.com/openshift/api v3.9.1-0.20191031084152-11eee842dafd+incompatible
@@ -44,10 +42,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/sirupsen/logrus v1.6.0
-	github.com/spf13/pflag v1.0.5
 	github.com/syndesisio/syndesis/install/operator v0.0.0-20201210151747-8264b9904eab
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381
-	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
+	golang.org/x/net v0.0.0-20201021035429-f5854403a974
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	google.golang.org/protobuf v1.24.0
 	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.20.0
@@ -56,7 +53,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	// k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20200805222855-6aeccd4b50c6
-	sigs.k8s.io/controller-runtime v0.6.3
+	sigs.k8s.io/controller-runtime v0.7.0
 )
 
 replace (
@@ -64,6 +61,7 @@ replace (
 	github.com/go-logr/logr => github.com/go-logr/logr v0.1.0
 	github.com/openshift/api => github.com/openshift/api v0.0.0-20210105115604-44119421ec6b
 	github.com/operator-framework/operator-sdk => github.com/operator-framework/operator-sdk v1.2.0
+	sigs.k8s.io/controller-runtime => sigs.k8s.io/controller-runtime v0.6.3
 )
 
 // replace github.com/operator-framework/operator-sdk => github.com/operator-framework/operator-sdk v1.2.0
@@ -103,4 +101,3 @@ replace (
 replace github.com/Microsoft/hcsshim => github.com/Microsoft/hcsshim v0.8.14
 
 replace github.com/docker/docker => github.com/docker/docker v1.4.2-0.20200203170920-46ec8731fbce
-

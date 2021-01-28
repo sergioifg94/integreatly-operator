@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	marin3rv1alpha "github.com/3scale/marin3r/apis/envoy/v1alpha1"
+	marin3rv1alpha "github.com/3scale/marin3r/apis/marin3r/v1alpha1"
 	envoyapi "github.com/envoyproxy/go-control-plane/envoy/api/v2"
 	envoycore "github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
 	envoy_api_v2_endpoint "github.com/envoyproxy/go-control-plane/envoy/api/v2/endpoint"
@@ -754,8 +754,9 @@ func (r *Reconciler) createEnvoyRateLimitingConfig(ctx context.Context, client k
 
 	_, err = controllerutil.CreateOrUpdate(ctx, client, envoyconfig, func() error {
 		owner.AddIntegreatlyOwnerAnnotations(envoyconfig, r.installation)
+		serialization := "yaml"
 		envoyconfig.Spec.NodeID = apicastRatelimiting
-		envoyconfig.Spec.Serialization = "yaml"
+		envoyconfig.Spec.Serialization = &serialization
 		envoyconfig.Spec.EnvoyResources = &marin3rv1alpha.EnvoyResources{
 			Clusters: []marin3rv1alpha.EnvoyResource{
 				{

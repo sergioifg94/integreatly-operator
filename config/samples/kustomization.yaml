@@ -2,4 +2,5 @@
 resources:
 - rhmi.cr.yaml
 - integreatly-rhmi-cr.yaml
+- rhmiconfig.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

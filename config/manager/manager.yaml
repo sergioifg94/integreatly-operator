@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: operator
+  name: rhmi-operator
   namespace: system
   labels:
     control-plane: controller-manager
@@ -17,6 +17,7 @@ spec:
         control-plane: controller-manager
         name: rhmi-operator
     spec:
+      serviceAccountName: "rhmi-operator"
       containers:
       - command:
         - /manager

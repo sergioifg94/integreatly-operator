@@ -88,6 +88,7 @@ tags
 ### VisualStudioCode ###
 .vscode/*
 .history
+config/samples/integreatly-rhmi-cr.yml
 #ocm generated templates
 ocm/
 htpasswd

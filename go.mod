@@ -32,6 +32,7 @@ require (
 	github.com/integr8ly/keycloak-client v0.1.3
 	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/keycloak/keycloak-operator v0.0.0-20210115090828-e5d4686bb8a4
+	github.com/matryer/moq v0.1.4 // indirect
 	github.com/onsi/ginkgo v1.14.1
 	github.com/onsi/gomega v1.10.2
 	github.com/openshift/api v3.9.1-0.20191031084152-11eee842dafd+incompatible
@@ -43,9 +44,10 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/sirupsen/logrus v1.6.0
+	github.com/spf13/pflag v1.0.5
 	github.com/syndesisio/syndesis/install/operator v0.0.0-20201210151747-8264b9904eab
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
+	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
 	google.golang.org/protobuf v1.24.0
 	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.20.0

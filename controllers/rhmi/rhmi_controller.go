@@ -296,12 +296,12 @@ func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	// either not checked, or rechecking preflight checks
 	if installation.Status.PreflightStatus == rhmiv1alpha1.PreflightInProgress ||
 		installation.Status.PreflightStatus == rhmiv1alpha1.PreflightFail {
-		return r.preflightChecks(log, installation, installType, configManager)
+		return r.preflightChecks(installation, installType, configManager)
 	}
 
 	// If the CR is being deleted, handle uninstall and return
 	if installation.DeletionTimestamp != nil {
-		return r.handleUninstall(log, installation, installType)
+		return r.handleUninstall(installation, installType)
 	}
 
 	// If no current or target version is set this is the first installation of rhmi.
@@ -384,7 +384,7 @@ func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	}
 	metrics.SetRHMIStatus(installation)
 
-	err = r.updateStatusAndObject(log, originalInstallation, installation)
+	err = r.updateStatusAndObject(originalInstallation, installation)
 	return retryRequeue, err
 }
 
@@ -403,7 +403,7 @@ func (r *RHMIReconciler) reconcilePodDistribution(installation *rhmiv1alpha1.RHM
 	}
 }
 
-func (r *RHMIReconciler) updateStatusAndObject(log logr.Logger, original, installation *rhmiv1alpha1.RHMI) error {
+func (r *RHMIReconciler) updateStatusAndObject(original, installation *rhmiv1alpha1.RHMI) error {
 	if !reflect.DeepEqual(original.Status, installation.Status) {
 		log.Info("updating status")
 		err := r.Status().Update(context.TODO(), installation)
@@ -422,7 +422,7 @@ func (r *RHMIReconciler) updateStatusAndObject(log logr.Logger, original, instal
 	return nil
 }
 
-func (r *RHMIReconciler) handleUninstall(log logr.Logger, installation *rhmiv1alpha1.RHMI, installationType *Type) (ctrl.Result, error) {
+func (r *RHMIReconciler) handleUninstall(installation *rhmiv1alpha1.RHMI, installationType *Type) (ctrl.Result, error) {
 	retryRequeue := ctrl.Result{
 		Requeue:      true,
 		RequeueAfter: 10 * time.Second,
@@ -656,7 +656,7 @@ func (r *RHMIReconciler) preflightChecks(installation *rhmiv1alpha1.RHMI, instal
 	}
 
 	for _, ns := range namespaces.Items {
-		products, err := r.checkNamespaceForProducts(log, ns, installation, installationType, configManager)
+		products, err := r.checkNamespaceForProducts(ns, installation, installationType, configManager)
 		if err != nil {
 			// error searching for existing products, keep trying
 			log.Info("error looking for existing deployments, will retry")
@@ -681,7 +681,7 @@ func (r *RHMIReconciler) preflightChecks(installation *rhmiv1alpha1.RHMI, instal
 	return result, nil
 }
 
-func (r *RHMIReconciler) checkNamespaceForProducts(log logr.Logger, ns corev1.Namespace, installation *rhmiv1alpha1.RHMI, installationType *Type, configManager *config.Manager) ([]string, error) {
+func (r *RHMIReconciler) checkNamespaceForProducts(ns corev1.Namespace, installation *rhmiv1alpha1.RHMI, installationType *Type, configManager *config.Manager) ([]string, error) {
 	foundProducts := []string{}
 	if strings.HasPrefix(ns.Name, "openshift-") {
 		return foundProducts, nil

@@ -93,7 +93,7 @@ var (
 	// - Keys are labels that might be set to the configMap object
 	// - Values are functions that receive the value of the label, the reconcile request,
 	//   and the reconciler instance.
-	configMapLabelBasedActions = map[string]func(string, reconcile.Request, *ReconcileNamespaceLabel) error{
+	configMapLabelBasedActions = map[string]func(string, reconcile.Request, *NamespaceLabelReconciler) error{
 		// Uninstall RHMI
 		"api.openshift.com/addon-rhmi-operator-delete": Uninstall,
 		// Uninstall MAO
@@ -184,7 +184,7 @@ type NamespaceLabelReconciler struct {
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
 func (r *NamespaceLabelReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	log := r.Log.WithValues("namespacelabel", request.NamespacedName)
+	// log := r.Log.WithValues("namespacelabel", request.NamespacedName)
 
 	if request.NamespacedName.Name == r.operatorNamespace {
 		r.log.Info("Reconciling namespace labels")
@@ -246,9 +246,9 @@ func (r *NamespaceLabelReconciler) CheckLabel(o metav1.Object, request ctrl.Requ
 }
 
 // CheckConfigMap Checks configMap for labels determines what action to use
-func (r *ReconcileNamespaceLabel) CheckConfigMap(o metav1.Object, request reconcile.Request, deletionConfigMapName string) error {
+func (r *NamespaceLabelReconciler) CheckConfigMap(o metav1.Object, request ctrl.Request, deletionConfigMapName string) error {
 	configMap := &corev1.ConfigMap{}
-	err := r.client.Get(context.TODO(), types.NamespacedName{Namespace: request.NamespacedName.Name, Name: deletionConfigMapName}, configMap)
+	err := r.Get(context.TODO(), types.NamespacedName{Namespace: request.NamespacedName.Name, Name: deletionConfigMapName}, configMap)
 	if err != nil {
 		return err
 	}

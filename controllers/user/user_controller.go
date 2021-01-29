@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/go-logr/logr"
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
 	userHelper "github.com/integr8ly/integreatly-operator/pkg/resources/user"
@@ -16,11 +17,11 @@ import (
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-var log = l.NewLoggerWithContext(l.Fields{l.ControllerLogContext: "subscription_controller"})
+var log = l.NewLoggerWithContext(l.Fields{l.ControllerLogContext: "user_controller"})
 
 // UserReconciler reconciles a User object
 type UserReconciler struct {
-	// Log logr.Logger
+	Log logr.Logger
 }
 
 // +kubebuilder:rbac:groups=user.openshift.io,resources=groups,verbs=get;list;watch;create
@@ -30,7 +31,6 @@ type UserReconciler struct {
 func (r *UserReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
 	// reqLogger := r.Log.WithValues("user", request.NamespacedName)
-	log.Logger = log.WithContext(l.Fields{l.ControllerLogContext: "user_controller"})
 	log.Info("Reconciling User")
 
 	// new client to avoid caching issues

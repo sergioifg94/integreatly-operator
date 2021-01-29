@@ -1,40 +1,37 @@
-package subscription
+package controllers
 
 import (
 	"context"
 	"fmt"
-	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
-	"os"
 	"regexp"
 	"strings"
 	"time"
 
+	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
+
+	"github.com/go-logr/logr"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 
 	"github.com/blang/semver"
-	"github.com/integr8ly/integreatly-operator/pkg/controller/subscription/csvlocator"
-	"github.com/integr8ly/integreatly-operator/pkg/controller/subscription/rhmiConfigs"
-	"github.com/integr8ly/integreatly-operator/pkg/controller/subscription/webapp"
+	"github.com/integr8ly/integreatly-operator/controllers/subscription/csvlocator"
+	"github.com/integr8ly/integreatly-operator/controllers/subscription/rhmiConfigs"
+	"github.com/integr8ly/integreatly-operator/controllers/subscription/webapp"
 	"github.com/integr8ly/integreatly-operator/version"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/pkg/apis/integreatly/v1alpha1"
+	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	catalogsourceClient "github.com/integr8ly/integreatly-operator/pkg/resources/catalogsource"
 
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 
 	pkgerr "github.com/pkg/errors"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	controllerruntime "sigs.k8s.io/controller-runtime"
+	ctrl "sigs.k8s.io/controller-runtime"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/controller"
-	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 const (
@@ -55,16 +52,16 @@ var log = l.NewLoggerWithContext(l.Fields{l.ControllerLogContext: "subscription_
 
 // Add creates a new Subscription Controller and adds it to the Manager. The Manager will set fields on the Controller
 // and Start it when the Manager is Started.
-func Add(mgr manager.Manager) error {
-	reconciler, err := newReconciler(mgr)
-	if err != nil {
-		return err
-	}
-	return add(mgr, reconciler)
-}
+// func Add(mgr manager.Manager) error {
+// 	reconciler, err := newReconciler(mgr)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return add(mgr, reconciler)
+// }
 
-func newReconciler(mgr manager.Manager) (reconcile.Reconciler, error) {
-	watchNS, err := k8sutil.GetWatchNamespace()
+func New(mgr manager.Manager) (*SubscriptionReconciler, error) {
+	watchNS, err := resources.GetWatchNamespace()
 	if err != nil {
 		return nil, pkgerr.Wrap(err, "could not get watch namespace from subscription controller")
 	}
@@ -87,7 +84,9 @@ func newReconciler(mgr manager.Manager) (reconcile.Reconciler, error) {
 
 	webappNotifierClient := webapp.NewLazyUpgradeNotifier(func() (k8sclient.Client, error) {
 		restConfig := controllerruntime.GetConfigOrDie()
-		return k8sclient.New(restConfig, k8sclient.Options{})
+		return k8sclient.New(restConfig, k8sclient.Options{
+			Scheme: mgr.GetScheme(),
+		})
 	})
 
 	csvLocator := csvlocator.NewCachedCSVLocator(csvlocator.NewConditionalCSVLocator(
@@ -97,10 +96,11 @@ func newReconciler(mgr manager.Manager) (reconcile.Reconciler, error) {
 		),
 	))
 
-	return &ReconcileSubscription{
+	return &SubscriptionReconciler{
 		mgr:                 mgr,
-		client:              client,
-		scheme:              mgr.GetScheme(),
+		Client:              client,
+		Log:                 ctrl.Log.WithName("controllers").WithName("Subscription"),
+		Scheme:              mgr.GetScheme(),
 		operatorNamespace:   operatorNs,
 		catalogSourceClient: catalogSourceClient,
 		webbappNotifier:     webappNotifierClient,
@@ -108,26 +108,11 @@ func newReconciler(mgr manager.Manager) (reconcile.Reconciler, error) {
 	}, nil
 }
 
-func add(mgr manager.Manager, r reconcile.Reconciler) error {
-	c, err := controller.New("subscription-controller", mgr, controller.Options{Reconciler: r})
-	if err != nil {
-		return err
-	}
+type SubscriptionReconciler struct {
+	k8sclient.Client
+	Log    logr.Logger
+	Scheme *runtime.Scheme
 
-	err = c.Watch(&source.Kind{Type: &operatorsv1alpha1.Subscription{}}, &handler.EnqueueRequestForObject{})
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// blank assignment to verify that ReconcileSubscription implements reconcile.Reconciler
-var _ reconcile.Reconciler = &ReconcileSubscription{}
-
-type ReconcileSubscription struct {
-	client              k8sclient.Client
-	scheme              *runtime.Scheme
 	operatorNamespace   string
 	mgr                 manager.Manager
 	catalogSourceClient catalogsourceClient.CatalogSourceClientInterface
@@ -135,46 +120,55 @@ type ReconcileSubscription struct {
 	csvLocator          csvlocator.CSVLocator
 }
 
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=subscriptions;subscriptions/status,verbs=get;list;watch;update;patch;delete,namespace=integreatly-operator
+
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=installplans,verbs=get;list;watch;update;patch;delete,namespace=integreatly-operator
+
+// +kubebuilder:rbac:groups=operators.coreos.com,resources=clusterserviceversions,verbs=get;delete;list,namespace=integreatly-operator
+
 // Reconcile will ensure that that Subscription object(s) have Manual approval for the upgrades
 // In a namespaced installation of integreatly operator it will only reconcile Subscription of the integreatly operator itself
-func (r *ReconcileSubscription) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *SubscriptionReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
+	_ = context.Background()
+	// log := r.Log.WithValues("subscription", request.NamespacedName)
+
 	// skip any Subscriptions that are not integreatly operator
 	if !r.shouldReconcileSubscription(request) {
 		log.Infof("Not our subscription", l.Fields{"request": request, "opNS": r.operatorNamespace})
-		return reconcile.Result{}, nil
+		return ctrl.Result{}, nil
 	}
 
 	subscription := &operatorsv1alpha1.Subscription{}
-	err := r.client.Get(context.TODO(), request.NamespacedName, subscription)
+	err := r.Get(context.TODO(), request.NamespacedName, subscription)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request. Return and don't requeue
-			return reconcile.Result{}, nil
+			return ctrl.Result{}, nil
 		}
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 
 	if subscription.Spec.InstallPlanApproval != operatorsv1alpha1.ApprovalManual {
 		subscription.Spec.InstallPlanApproval = operatorsv1alpha1.ApprovalManual
-		err = r.client.Update(context.TODO(), subscription)
+		err = r.Update(context.TODO(), subscription)
 		if err != nil {
-			return reconcile.Result{}, err
+			return ctrl.Result{}, err
 		}
 	}
 
-	rhmiCr, err := resources.GetRhmiCr(r.client, context.TODO(), request.NamespacedName.Namespace, log)
+	rhmiCr, err := resources.GetRhmiCr(r.Client, context.TODO(), request.NamespacedName.Namespace, log)
 	if err != nil {
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 	if rhmiCr == nil {
 		// Request object not found, could have been deleted after reconcile request. Return and don't requeue
-		return reconcile.Result{}, nil
+		return ctrl.Result{}, nil
 	}
 
 	return r.HandleUpgrades(context.TODO(), subscription, rhmiCr)
 }
 
-func (r *ReconcileSubscription) shouldReconcileSubscription(request reconcile.Request) bool {
+func (r *SubscriptionReconciler) shouldReconcileSubscription(request ctrl.Request) bool {
 	if request.Namespace != r.operatorNamespace {
 		return false
 	}
@@ -188,34 +182,34 @@ func (r *ReconcileSubscription) shouldReconcileSubscription(request reconcile.Re
 	return false
 }
 
-func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscription *operatorsv1alpha1.Subscription, installation *integreatlyv1alpha1.RHMI) (reconcile.Result, error) {
+func (r *SubscriptionReconciler) HandleUpgrades(ctx context.Context, rhmiSubscription *operatorsv1alpha1.Subscription, installation *integreatlyv1alpha1.RHMI) (ctrl.Result, error) {
 	if !rhmiConfigs.IsUpgradeAvailable(rhmiSubscription) {
 		log.Info("no upgrade available")
 
 		namespaceSegments := strings.Split(rhmiSubscription.Namespace, "-")
 		namespacePrefix := strings.Join(namespaceSegments[0:2], "-") + "-"
 		if err := r.webbappNotifier.ClearNotification(namespacePrefix); err != nil {
-			return reconcile.Result{}, err
+			return ctrl.Result{}, err
 		}
 
-		return reconcile.Result{}, nil
+		return ctrl.Result{}, nil
 	}
 
-	latestRHMIInstallPlan, err := rhmiConfigs.GetLatestInstallPlan(ctx, rhmiSubscription, r.client)
+	latestRHMIInstallPlan, err := rhmiConfigs.GetLatestInstallPlan(ctx, rhmiSubscription, r.Client)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// if installplan is not found trigger the creation of a new one
-			err = rhmiConfigs.CreateInstallPlan(ctx, rhmiSubscription, r.client)
+			err = rhmiConfigs.CreateInstallPlan(ctx, rhmiSubscription, r.Client)
 			if err != nil {
-				return reconcile.Result{}, err
+				return ctrl.Result{}, err
 			}
 		}
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 
-	latestRHMICSV, err := r.csvLocator.GetCSV(ctx, r.client, latestRHMIInstallPlan)
+	latestRHMICSV, err := r.csvLocator.GetCSV(ctx, r.Client, latestRHMIInstallPlan)
 	if err != nil {
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 
 	config := &integreatlyv1alpha1.RHMIConfig{
@@ -224,21 +218,21 @@ func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscrip
 			Namespace: r.operatorNamespace,
 		},
 	}
-	err = r.client.Get(ctx, k8sclient.ObjectKey{Name: config.Name, Namespace: config.Namespace}, config)
+	err = r.Get(ctx, k8sclient.ObjectKey{Name: config.Name, Namespace: config.Namespace}, config)
 	if err != nil {
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 
 	// checks if the operator is running locally don't use the catalogsource
 	csvFromCatalogSource := latestRHMICSV
-	if os.Getenv(k8sutil.ForceRunModeEnv) != string(k8sutil.LocalRunMode) {
+	if resources.IsRunInCluster() {
 		objectKey := k8sclient.ObjectKey{
 			Name:      rhmiSubscription.Spec.CatalogSource,
 			Namespace: rhmiSubscription.Spec.CatalogSourceNamespace,
 		}
 		csvFromCatalogSource, err = r.catalogSourceClient.GetLatestCSV(objectKey, rhmiSubscription.Spec.Package, rhmiSubscription.Spec.Channel)
 		if err != nil {
-			return reconcile.Result{}, fmt.Errorf("Error getting the csv from catalogsource %w", err)
+			return ctrl.Result{}, fmt.Errorf("Error getting the csv from catalogsource %w", err)
 		}
 
 		if skipRangeStr, ok := csvFromCatalogSource.GetAnnotations()["olm.skipRange"]; ok {
@@ -246,13 +240,13 @@ func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscrip
 			rhmiPreviousVersion := regex.FindAllStringSubmatch(csvFromCatalogSource.Spec.Replaces, -1)[0][1]
 
 			if rhmiPreviousVersion == "" {
-				return reconcile.Result{}, fmt.Errorf("Error getting the version from replace field %w", err)
+				return ctrl.Result{}, fmt.Errorf("Error getting the version from replace field %w", err)
 			}
 
 			v, err := semver.Parse(rhmiPreviousVersion)
 			expectedRange, err := semver.ParseRange(skipRangeStr)
 			if err != nil {
-				return reconcile.Result{}, fmt.Errorf("Error getting the version from the csv %w", err)
+				return ctrl.Result{}, fmt.Errorf("Error getting the version from the csv %w", err)
 			}
 			if expectedRange(v) && csvFromCatalogSource.Spec.Replaces != latestRHMICSV.Spec.Replaces {
 				csvFromCatalogSource = latestRHMICSV
@@ -265,32 +259,32 @@ func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscrip
 	if csvFromCatalogSource.Spec.Replaces != currentOperatorVersionName {
 
 		if csvFromCatalogSource.Spec.Replaces != latestRHMICSV.Spec.Replaces {
-			err = rhmiConfigs.DeleteInstallPlan(ctx, latestRHMIInstallPlan, r.client)
+			err = rhmiConfigs.DeleteInstallPlan(ctx, latestRHMIInstallPlan, r.Client)
 			if err != nil {
-				return reconcile.Result{}, fmt.Errorf("error deleting installplan %w", err)
+				return ctrl.Result{}, fmt.Errorf("error deleting installplan %w", err)
 			}
 
 			isInstallPlanDeleted = true
 			log.Info("Installplan deleted for the install of patch upgrade")
 
-			err = rhmiConfigs.CreateInstallPlan(ctx, rhmiSubscription, r.client)
+			err = rhmiConfigs.CreateInstallPlan(ctx, rhmiSubscription, r.Client)
 			if err != nil {
-				return reconcile.Result{}, err
+				return ctrl.Result{}, err
 			}
 		}
 
 		if isInstallPlanDeleted {
 			// Requeue reconciler until the installplan is recreated
-			return reconcile.Result{
+			return ctrl.Result{
 				Requeue:      true,
 				RequeueAfter: 10 * time.Second,
 			}, nil
 		}
 
 		// gets the subscription wit the recreated installplan
-		err := r.client.Get(ctx, k8sclient.ObjectKey{Name: rhmiSubscription.Name, Namespace: rhmiSubscription.Namespace}, rhmiSubscription)
+		err := r.Client.Get(ctx, k8sclient.ObjectKey{Name: rhmiSubscription.Name, Namespace: rhmiSubscription.Namespace}, rhmiSubscription)
 		if err != nil {
-			return reconcile.Result{}, err
+			return ctrl.Result{}, err
 		}
 	}
 
@@ -303,10 +297,10 @@ func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscrip
 		}
 
 		config.Status.UpgradeAvailable = newUpgradeAvailable
-		if err := r.client.Status().Update(context.TODO(), config); err != nil {
-			return reconcile.Result{}, err
+		if err := r.Status().Update(context.TODO(), config); err != nil {
+			return ctrl.Result{}, err
 		}
-		return reconcile.Result{
+		return ctrl.Result{
 			Requeue:      true,
 			RequeueAfter: 10 * time.Second,
 		}, nil
@@ -314,12 +308,12 @@ func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscrip
 
 	canUpgradeNow, err := rhmiConfigs.CanUpgradeNow(config, installation)
 	if err != nil {
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 
 	phase, err := r.webbappNotifier.NotifyUpgrade(config, latestRHMICSV.Spec.Version.String(), isServiceAffecting)
 	if err != nil {
-		return reconcile.Result{}, err
+		return ctrl.Result{}, err
 	}
 	if phase == integreatlyv1alpha1.PhaseInProgress {
 		log.Info("WebApp instance not found yet, skipping upgrade addition")
@@ -330,24 +324,30 @@ func (r *ReconcileSubscription) HandleUpgrades(ctx context.Context, rhmiSubscrip
 
 		if config.Status.UpgradeAvailable != nil && config.Status.UpgradeAvailable.TargetVersion == rhmiSubscription.Status.CurrentCSV {
 			config.Status.UpgradeAvailable = nil
-			if err := r.client.Status().Update(context.TODO(), config); err != nil {
-				return reconcile.Result{}, err
+			if err := r.Status().Update(context.TODO(), config); err != nil {
+				return ctrl.Result{}, err
 			}
 		}
 
-		err = rhmiConfigs.ApproveUpgrade(ctx, r.client, installation, latestRHMIInstallPlan, eventRecorder)
+		err = rhmiConfigs.ApproveUpgrade(ctx, r.Client, installation, latestRHMIInstallPlan, eventRecorder)
 		if err != nil {
-			return reconcile.Result{}, err
+			return ctrl.Result{}, err
 		}
 
 		// Requeue the reconciler until the RHMI subscription upgrade is complete
-		return reconcile.Result{
+		return ctrl.Result{
 			Requeue:      true,
 			RequeueAfter: 10 * time.Second,
 		}, nil
 	}
-	return reconcile.Result{
+	return ctrl.Result{
 		Requeue:      true,
 		RequeueAfter: time.Minute,
 	}, nil
+}
+
+func (r *SubscriptionReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&operatorsv1alpha1.Subscription{}).
+		Complete(r)
 }

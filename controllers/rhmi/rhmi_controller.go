@@ -27,7 +27,6 @@ import (
 
 	"github.com/integr8ly/integreatly-operator/pkg/resources/poddistribution"
 
-	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
@@ -79,7 +78,6 @@ var (
 // RHMIReconciler reconciles a RHMI object
 type RHMIReconciler struct {
 	k8sclient.Client
-	Log    logr.Logger
 	Scheme *runtime.Scheme
 
 	mgr             ctrl.Manager
@@ -94,7 +92,6 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 	return &RHMIReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
-		Log:    ctrl.Log.WithName("controllers").WithName("RHMI"),
 
 		mgr:             mgr,
 		restConfig:      restconfig,
@@ -197,7 +194,6 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 
 func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	// log := r.Log.WithValues("rhmi", request.NamespacedName)
 
 	// your logic here
 	installInProgress := false

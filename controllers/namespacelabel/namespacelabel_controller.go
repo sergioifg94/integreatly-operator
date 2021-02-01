@@ -22,8 +22,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-logr/logr"
-
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
@@ -120,7 +118,6 @@ func New(mgr manager.Manager) *NamespaceLabelReconciler {
 	return &NamespaceLabelReconciler{
 		Client:            mgr.GetClient(),
 		Scheme:            mgr.GetScheme(),
-		Log:               ctrl.Log.WithName("controllers").WithName("Namespace"),
 		operatorNamespace: operatorNs,
 		log:               log,
 	}
@@ -170,7 +167,6 @@ type NamespaceLabelReconciler struct {
 	// This client, initialized using mgr.Client() above, is a split client
 	// that reads objects from the cache and writes to the apiserver
 	k8sclient.Client
-	Log    logr.Logger
 	Scheme *runtime.Scheme
 
 	operatorNamespace string

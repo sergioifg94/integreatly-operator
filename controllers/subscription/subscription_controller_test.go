@@ -7,7 +7,6 @@ import (
 
 	"github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 	olmv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
-	ctrl "sigs.k8s.io/controller-runtime"
 
 	integreatlyv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/controllers/subscription/csvlocator"
@@ -264,7 +263,6 @@ func TestSubscriptionReconciler(t *testing.T) {
 			reconciler := SubscriptionReconciler{
 				Client:              client,
 				Scheme:              scheme,
-				Log:                 ctrl.Log.Logger,
 				catalogSourceClient: scenario.catalogsourceClient,
 				operatorNamespace:   operatorNamespace,
 				webbappNotifier:     &webapp.NoOp{},

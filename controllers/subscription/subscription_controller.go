@@ -9,7 +9,6 @@ import (
 
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
-	"github.com/go-logr/logr"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 
 	"github.com/blang/semver"
@@ -99,7 +98,6 @@ func New(mgr manager.Manager) (*SubscriptionReconciler, error) {
 	return &SubscriptionReconciler{
 		mgr:                 mgr,
 		Client:              client,
-		Log:                 ctrl.Log.WithName("controllers").WithName("Subscription"),
 		Scheme:              mgr.GetScheme(),
 		operatorNamespace:   operatorNs,
 		catalogSourceClient: catalogSourceClient,
@@ -110,7 +108,6 @@ func New(mgr manager.Manager) (*SubscriptionReconciler, error) {
 
 type SubscriptionReconciler struct {
 	k8sclient.Client
-	Log    logr.Logger
 	Scheme *runtime.Scheme
 
 	operatorNamespace   string
@@ -130,7 +127,6 @@ type SubscriptionReconciler struct {
 // In a namespaced installation of integreatly operator it will only reconcile Subscription of the integreatly operator itself
 func (r *SubscriptionReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	// log := r.Log.WithValues("subscription", request.NamespacedName)
 
 	// skip any Subscriptions that are not integreatly operator
 	if !r.shouldReconcileSubscription(request) {

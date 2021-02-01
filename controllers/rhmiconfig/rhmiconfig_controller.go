@@ -23,7 +23,6 @@ import (
 
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
-	"github.com/go-logr/logr"
 	croUtil "github.com/integr8ly/cloud-resource-operator/pkg/client"
 	"github.com/integr8ly/integreatly-operator/controllers/rhmiconfig/helpers"
 	k8sErr "k8s.io/apimachinery/pkg/api/errors"
@@ -40,7 +39,6 @@ var log = l.NewLoggerWithContext(l.Fields{l.ControllerLogContext: "rhmi_config_c
 // RHMIConfigReconciler reconciles a RHMIConfig object
 type RHMIConfigReconciler struct {
 	client.Client
-	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
 
@@ -49,7 +47,6 @@ type RHMIConfigReconciler struct {
 
 func (r *RHMIConfigReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-	// log := r.Log.WithValues("rhmiconfig", request.NamespacedName)
 
 	log.Info("reconciling RHMIConfig")
 	// Fetch the RHMIConfig instance

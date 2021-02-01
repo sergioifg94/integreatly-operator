@@ -40,17 +40,22 @@ import (
 	"k8s.io/client-go/rest"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/builder"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
+	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/source"
+
+	usersv1 "github.com/openshift/api/user/v1"
 
 	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	"github.com/integr8ly/integreatly-operator/pkg/addon"
 	"github.com/integr8ly/integreatly-operator/pkg/config"
 	"github.com/integr8ly/integreatly-operator/pkg/metrics"
 	"github.com/integr8ly/integreatly-operator/pkg/products"
+	marin3rconfig "github.com/integr8ly/integreatly-operator/pkg/products/marin3r/config"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 	"github.com/integr8ly/integreatly-operator/pkg/resources/marketplace"
@@ -847,11 +852,19 @@ func (r *RHMIReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		return err
 	}
 
+	enqueueAllInstallations := &handler.EnqueueRequestsFromMapFunc{
+		ToRequests: installationMapper{context: context.TODO(), client: mgr.GetClient()},
+	}
+
 	// Instead of calling .Complete(r), we call .Build(r), which
 	// does the same but returns the controller instance, to be
 	// stored in the reconciler
 	controller, err := ctrl.NewControllerManagedBy(mgr).
 		For(&rhmiv1alpha1.RHMI{}).
+		Watches(&source.Kind{Type: &usersv1.User{}}, enqueueAllInstallations).
+		Watches(&source.Kind{Type: &corev1.Secret{}}, enqueueAllInstallations).
+		Watches(&source.Kind{Type: &usersv1.Group{}}, enqueueAllInstallations).
+		Watches(&source.Kind{Type: &corev1.ConfigMap{}}, enqueueAllInstallations, builder.WithPredicates(newObjectPredicate(isName(marin3rconfig.RateLimitConfigMapName)))).
 		Build(r)
 
 	if err != nil {

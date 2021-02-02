@@ -11,8 +11,12 @@ RUN go mod download
 
 # Copy the go source
 COPY main.go main.go
-COPY api/ api/
+COPY apis/ apis/
+COPY apis-products/ apis-products/
 COPY controllers/ controllers/
+COPY pkg/ pkg/
+COPY version/ version/
+COPY test/ test/
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager main.go
@@ -23,5 +27,10 @@ FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --from=builder /workspace/manager .
 USER nonroot:nonroot
+
+COPY templates /templates
+
+COPY manifests /manifests
+
 
 ENTRYPOINT ["/manager"]

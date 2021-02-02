@@ -18,6 +18,9 @@ spec:
         name: rhmi-operator
     spec:
       serviceAccountName: "rhmi-operator"
+      volumes:
+      - name: webhook-certs
+        emptyDir: {}
       containers:
       - command:
         - /manager

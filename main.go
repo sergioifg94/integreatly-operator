@@ -33,8 +33,11 @@ import (
 	rhmiconfigcontroller "github.com/integr8ly/integreatly-operator/controllers/rhmiconfig"
 	subscriptioncontroller "github.com/integr8ly/integreatly-operator/controllers/subscription"
 	usercontroller "github.com/integr8ly/integreatly-operator/controllers/user"
+	"github.com/integr8ly/integreatly-operator/pkg/addon"
 	"github.com/integr8ly/integreatly-operator/pkg/resources"
+	"github.com/integr8ly/integreatly-operator/pkg/webhooks"
 	"github.com/sirupsen/logrus"
+	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -116,9 +119,69 @@ func main() {
 	}
 	// +kubebuilder:scaffold:builder
 
+	if err := setupWebhooks(mgr); err != nil {
+		setupLog.Error(err, "Error setting up webhook server")
+	}
+
 	setupLog.Info("starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
 		setupLog.Error(err, "problem running manager")
 		os.Exit(1)
 	}
+}
+
+func setupWebhooks(mgr ctrl.Manager) error {
+	rhmiConfigRegister, err := webhooks.WebhookRegisterFor(&rhmiv1alpha1.RHMIConfig{})
+	if err != nil {
+		return err
+	}
+
+	webhooks.Config.AddWebhook(webhooks.IntegreatlyWebhook{
+		Name:     "rhmiconfig",
+		Register: rhmiConfigRegister,
+		Rule: webhooks.NewRule().
+			OneResource("integreatly.org", "v1alpha1", "rhmiconfigs").
+			ForCreate().
+			ForUpdate().
+			NamespacedScope(),
+	})
+
+	webhooks.Config.AddWebhook(webhooks.IntegreatlyWebhook{
+		Name: "rhmiconfig-mutate",
+		Rule: webhooks.NewRule().
+			OneResource("integreatly.org", "v1alpha1", "rhmiconfigs").
+			ForCreate().
+			ForUpdate().
+			NamespacedScope(),
+		Register: webhooks.AdmissionWebhookRegister{
+			Type: webhooks.MutatingType,
+			Path: "/mutate-rhmiconfig",
+			Hook: &admission.Webhook{
+				Handler: rhmiv1alpha1.NewRHMIConfigMutatingHandler(),
+			},
+		},
+	})
+
+	// Delete webhook for the RHMI CR that uninstalls the operator if there
+	// are no finalizers left
+	webhooks.Config.AddWebhook(webhooks.IntegreatlyWebhook{
+		Name: "rhmi-delete",
+		Rule: webhooks.NewRule().
+			OneResource("integreatly.org", "v1alpha1", "rhmis").
+			ForDelete().
+			NamespacedScope(),
+		Register: webhooks.AdmissionWebhookRegister{
+			Type: webhooks.ValidatingType,
+			Path: "/delete-rhmi",
+			Hook: &admission.Webhook{
+				Handler: addon.NewDeleteRHMIHandler(mgr.GetConfig()),
+			},
+		},
+	})
+
+	if err := webhooks.Config.SetupServer(mgr); err != nil {
+		return err
+	}
+
+	return nil
 }

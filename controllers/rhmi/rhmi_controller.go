@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/integr8ly/integreatly-operator/pkg/resources/poddistribution"
+	"github.com/integr8ly/integreatly-operator/pkg/webhooks"
 
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -281,10 +282,9 @@ func (r *RHMIReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	}
 
 	// Reconcile the webhooks
-	// TODO: Migrate webhooks
-	// if err := webhooks.Config.Reconcile(context.TODO(), r.Client, installation); err != nil {
-	// 	return ctrl.Result{}, err
-	// }
+	if err := webhooks.Config.Reconcile(context.TODO(), r.Client, installation); err != nil {
+		return ctrl.Result{}, err
+	}
 
 	if !resources.Contains(installation.GetFinalizers(), deletionFinalizer) && installation.GetDeletionTimestamp() == nil {
 		installation.SetFinalizers(append(installation.GetFinalizers(), deletionFinalizer))

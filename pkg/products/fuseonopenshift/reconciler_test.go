@@ -92,7 +92,7 @@ func setupRecorder() record.EventRecorder {
 func TestFuseOnOpenShift(t *testing.T) {
 	// Initialize scheme so that types required by the scenarios are available
 	scheme := scheme.Scheme
-	if err := integreatlyv1alpha1.AddToScheme(scheme); err != nil {
+	if err := integreatlyv1alpha1.AddToSchemes.AddToScheme(scheme); err != nil {
 		t.Fatalf("failed to initialize scheme: %s", err)
 	}
 

@@ -187,16 +187,17 @@ image/push:
 .PHONY: image/build/push
 image/build/push: image/build image/push
 
-.PHONY: test/unit
-test/unit: export WATCH_NAMESPACE=testing-namespaces-operator
-test/unit:
-	@TEMPLATE_PATH=$(TEMPLATE_PATH) ./scripts/ci/unit_test.sh
 
+############ E2E TEST COMMANDS ############
 .PHONY: test/e2e/prow
 test/e2e/prow: export component := integreatly-operator
 test/e2e/prow: export OPERATOR_IMAGE := ${IMAGE_FORMAT}
 test/e2e/prow: export INSTALLATION_TYPE := managed
 test/e2e/prow: export SKIP_FLAKES := $(SKIP_FLAKES)
+test/e2e/prow: export WATCH_NAMESPACE := redhat-rhmi-operator
+test/e2e/prow: export NAMESPACE_PREFIX := redhat-rhmi-
+test/e2e/prow: export INSTALLATION_PREFIX := redhat-rhmi
+test/e2e/prow: export INSTALLATION_NAME := rhmi
 test/e2e/prow: IN_PROW = "true"
 test/e2e/prow: test/e2e
 
@@ -205,23 +206,17 @@ test/e2e/rhoam/prow: export component := integreatly-operator
 test/e2e/rhoam/prow: export OPERATOR_IMAGE := ${IMAGE_FORMAT}
 test/e2e/rhoam/prow: export INSTALLATION_TYPE := managed-api
 test/e2e/rhoam/prow: export SKIP_FLAKES := $(SKIP_FLAKES)
+test/e2e/rhoam/prow: export WATCH_NAMESPACE := redhat-rhoam-operator
+test/e2e/rhoam/prow: export NAMESPACE_PREFIX := redhat-rhoam-
+test/e2e/rhoam/prow: export INSTALLATION_PREFIX := redhat-rhoam
+test/e2e/rhoam/prow: export INSTALLATION_NAME := rhoam
 test/e2e/rhoam/prow: IN_PROW = "true"
 test/e2e/rhoam/prow: test/e2e
 
-# e2e tests always run in redhat-rhmi-* namespaces, regardless of installation type
 .PHONY: test/e2e
 test/e2e: export SURF_DEBUG_HEADERS=1
-test/e2e: export WATCH_NAMESPACE := redhat-rhmi-operator
-test/e2e: export NAMESPACE_PREFIX := redhat-rhmi-
-test/e2e: export INSTALLATION_PREFIX := redhat-rhmi
-test/e2e: export INSTALLATION_NAME := rhmi
-test/e2e: cluster/cleanup cluster/cleanup/crds cluster/prepare cluster/prepare/crd deploy/integreatly-rhmi-cr.yml
-	$(OPERATOR_SDK) --verbose test local ./test/e2e --operator-namespace="$(NAMESPACE)" --go-test-flags "-timeout=120m" --debug --image=$(OPERATOR_IMAGE)
-
-.PHONY: test/e2e/local
-test/e2e/local: export WATCH_NAMESPACE := $(NAMESPACE)
-test/e2e/local: cluster/cleanup cluster/cleanup/crds cluster/prepare cluster/prepare/crd deploy/integreatly-rhmi-cr.yml
-	$(OPERATOR_SDK) --verbose test local ./test/e2e --watch-namespace="$(NAMESPACE)" --operator-namespace="${NAMESPACE}" --go-test-flags "-timeout=120m" --debug --up-local
+test/e2e: 
+	go clean -testcache && go test -v ./test/e2e -timeout=120m -ginkgo.v
 
 .PHONY: test/e2e/single
 test/e2e/single: export WATCH_NAMESPACE := $(NAMESPACE)
@@ -240,6 +235,9 @@ test/osde2e: export SKIP_FLAKES := $(SKIP_FLAKES)
 test/osde2e:
 	# Run the osde2e tests against an existing cluster. Make sure you have logged in to the cluster.
 	go clean -testcache && go test -v ./test/osde2e -timeout=120m
+
+############ E2E TEST COMMANDS ############
+
 
 .PHONY: test/products/local
 test/products/local: export WATCH_NAMESPACE := $(NAMESPACE)
@@ -264,6 +262,19 @@ test/rhoam/products:
 	mkdir -p $(TEST_RESULTS_DIR)
 	delorean pipeline product-tests --test-config ./test-containers-managed-api.yaml --output $(TEST_RESULTS_DIR) --namespace test-products
 
+
+.PHONY: cluster/deploy
+cluster/deploy: kustomize cluster/cleanup cluster/cleanup/crds cluster/prepare/crd cluster/prepare deploy/integreatly-rhmi-cr.yml
+	@ - oc create -f config/rbac/service_account.yaml
+	@ - cd config/manager && $(KUSTOMIZE) edit set image controller=${IMAGE_FORMAT}
+	@ - $(KUSTOMIZE) build config/redhat-$(INSTALLATION_SHORTHAND) | kubectl apply -f -
+
+.PHONY: test/unit
+test/unit: export WATCH_NAMESPACE=testing-namespaces-operator
+test/unit:
+	@TEMPLATE_PATH=$(TEMPLATE_PATH) ./scripts/ci/unit_test.sh
+
+
 .PHONY: install/olm
 install/olm: cluster/cleanup/olm cluster/cleanup/crds cluster/prepare cluster/prepare/olm/subscription deploy/integreatly-rhmi-cr.yml cluster/check/operator/deployment cluster/prepare/dms cluster/prepare/pagerduty
 
@@ -281,7 +292,7 @@ ifeq ($(INSTALLATION_TYPE), managed)
 endif
 
 .PHONY: cluster/prepare
-cluster/prepare: cluster/prepare/project cluster/prepare/osrc cluster/prepare/configmaps cluster/prepare/smtp cluster/prepare/dms cluster/prepare/pagerduty cluster/prepare/ratelimits cluster/prepare/delorean
+cluster/prepare: cluster/prepare/project cluster/prepare/configmaps cluster/prepare/smtp cluster/prepare/dms cluster/prepare/pagerduty cluster/prepare/ratelimits cluster/prepare/delorean
 
 .PHONY: cluster/prepare/bundle
 cluster/prepare/bundle: cluster/prepare/project cluster/prepare/configmaps cluster/prepare/smtp cluster/prepare/dms cluster/prepare/pagerduty cluster/prepare/delorean

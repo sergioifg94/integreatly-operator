@@ -4,7 +4,6 @@ import (
 	goctx "context"
 	"fmt"
 	"math/rand"
-	"testing"
 	"time"
 
 	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
@@ -42,7 +41,6 @@ func Test3ScaleCrudlPermissions(t TestingTB, ctx *TestingContext) {
 	// Login to 3Scale
 	err = loginToThreeScale(t, host, threescaleLoginUser, DefaultPassword, "testing-idp", ctx.HttpClient)
 	if err != nil {
-		dumpAuthResources(ctx.Client, t)
 		// t.Fatalf("[%s] error occurred: %v", getTimeStampPrefix(), err)
 		t.Skipf("flakey test [%s] error ocurred: %v jira https://issues.redhat.com/browse/MGDAPI-557 ", getTimeStampPrefix(), err)
 	}

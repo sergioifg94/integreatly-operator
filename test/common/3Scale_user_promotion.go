@@ -3,10 +3,10 @@ package common
 import (
 	goctx "context"
 	"fmt"
-	"testing"
 	"time"
 
 	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
+	"github.com/integr8ly/integreatly-operator/test/resources"
 	"k8s.io/apimachinery/pkg/util/wait"
 )
 

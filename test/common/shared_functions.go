@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 
 	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
@@ -30,6 +31,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/restmapper"
 	"k8s.io/client-go/tools/remotecommand"
+	dynclient "sigs.k8s.io/controller-runtime/pkg/client"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -337,4 +339,20 @@ func GetIDPBasedTestCases(installType string) []TestCase {
 		}
 	}
 	return testCases
+}
+
+func writeObjToYAMLFile(obj interface{}, out string) error {
+	data, err := yaml.Marshal(obj)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(out, data, 0644)
+}
+
+func WriteRHMICRToFile(client dynclient.Client, file string) error {
+	rhmi, err := GetRHMI(client, true)
+	if err != nil {
+		return fmt.Errorf("Failed to write RHMI cr due to error %w", err)
+	}
+	return writeObjToYAMLFile(rhmi, file)
 }

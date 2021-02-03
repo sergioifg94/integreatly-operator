@@ -50,9 +50,6 @@ func TestAPIs(t *testing.T) {
 	if err != nil {
 		t.Fatalf("could not get start test environment %s", err)
 	}
-	//TODO: Trigger operator install
-
-	//TODO: validate operator has completed install
 
 	// get install type
 	installType, err = common.GetInstallType(cfg)

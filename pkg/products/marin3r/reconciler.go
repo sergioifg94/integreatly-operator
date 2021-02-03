@@ -3,9 +3,10 @@ package marin3r
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 	"github.com/pkg/errors"
-	"strconv"
 
 	prometheus "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/integr8ly/cloud-resource-operator/pkg/apis/integreatly/v1alpha1/types"
@@ -381,9 +382,15 @@ func (r *Reconciler) reconcileDiscoveryService(ctx context.Context, client k8scl
 }
 
 func (r *Reconciler) deleteDiscoveryService(ctx context.Context, client k8sclient.Client) error {
+	threescaleConfig, err := r.ConfigManager.ReadThreeScale()
+	if err != nil {
+		return errors.Wrap(err, "could not read 3scale config from marin3r reconciler")
+	}
+
 	discoveryService := &marin3roperator.DiscoveryService{}
 	if err := client.Get(ctx, k8sclient.ObjectKey{
-		Name: discoveryServiceName,
+		Name:      discoveryServiceName,
+		Namespace: threescaleConfig.GetNamespace(),
 	}, discoveryService); err != nil {
 		if k8serr.IsNotFound(err) {
 			return nil

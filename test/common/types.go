@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	NamespacePrefix                   = "redhat-rhoam-"
+	NamespacePrefix                   = GetNamespacePrefix()
 	OpenShiftConsoleRoute             = "console"
 	OpenShiftConsoleNamespace         = "openshift-console"
 	RHMIOperatorNamespace             = NamespacePrefix + "operator"

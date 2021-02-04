@@ -324,6 +324,11 @@ cluster/prepare/local: kustomize cluster/prepare/project cluster/prepare/crd clu
 	@ - oc create -f config/rbac/service_account.yaml -n $(NAMESPACE)
 	@ - $(KUSTOMIZE) build config/rbac-$(INSTALLATION_SHORTHAND) | oc create -f -
 
+.PHONY: cluster/prepare/olm/subscription
+cluster/prepare/olm/subscription:
+	oc process -p NAMESPACE=$(NAMESPACE) -f config/olm/operator-subscription-template.yml | oc create -f - -n $(NAMESPACE)
+	$(call wait_command, oc get crd rhmis.integreatly.org, rhmis.integreatly.org crd, 1m, 10
+
 .PHONY: cluster/check/operator/deployment
 cluster/check/operator/deployment:
 	$(call wait_command, oc get deployments rhmi-operator -n $(NAMESPACE) --output=json -o jsonpath='{.status.availableReplicas}' | grep -q 1, rhmi-operator ,2m, 10)

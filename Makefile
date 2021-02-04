@@ -198,6 +198,7 @@ test/e2e/prow: export WATCH_NAMESPACE := redhat-rhmi-operator
 test/e2e/prow: export NAMESPACE_PREFIX := redhat-rhmi-
 test/e2e/prow: export INSTALLATION_PREFIX := redhat-rhmi
 test/e2e/prow: export INSTALLATION_NAME := rhmi
+test/e2e/prow: export INSTALLATION_SHORTHAND := rhmi
 test/e2e/prow: IN_PROW = "true"
 test/e2e/prow: test/e2e
 
@@ -210,6 +211,7 @@ test/e2e/rhoam/prow: export WATCH_NAMESPACE := redhat-rhoam-operator
 test/e2e/rhoam/prow: export NAMESPACE_PREFIX := redhat-rhoam-
 test/e2e/rhoam/prow: export INSTALLATION_PREFIX := redhat-rhoam
 test/e2e/rhoam/prow: export INSTALLATION_NAME := rhoam
+test/e2e/rhoam/prow: export INSTALLATION_SHORTHAND := rhoam
 test/e2e/rhoam/prow: IN_PROW = "true"
 test/e2e/rhoam/prow: test/e2e
 
@@ -220,7 +222,7 @@ test/e2e:
 
 .PHONY: test/e2e/single
 test/e2e/single: export WATCH_NAMESPACE := $(NAMESPACE)
-test/e2e/single:
+test/e2e/single: 
 	go clean -testcache && go test -v ./test/functional -run="//^$(TEST)" -timeout=80m
 
 .PHONY: test/functional

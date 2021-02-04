@@ -23,7 +23,7 @@ spec:
         emptyDir: {}
       containers:
       - command:
-        - /manager
+        - rhmi-operator
         args:
         - --enable-leader-election
         image: controller:latest

@@ -136,13 +136,13 @@ set_images() {
   case $OLM_TYPE in
    "integreatly-operator")
   : "${IMAGE_TAG:=v${SEMVER}}"
-  "${SED_INLINE[@]}" "s/image:.*/image: quay\.io\/$ORG\/$OLM_TYPE:$IMAGE_TAG/g" "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml"
-  "${SED_INLINE[@]}" "s/containerImage:.*/containerImage: quay\.io\/$ORG\/$OLM_TYPE:$IMAGE_TAG/g" "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml"
+  yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" spec.install.spec.deployments.[0].spec.template.spec.containers[1].image quay.io/$ORG/$OLM_TYPE:$IMAGE_TAG
+  yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" metadata.annotations.containerImage quay.io/$ORG/$OLM_TYPE:$IMAGE_TAG
   ;;
   "managed-api-service")
    : "${IMAGE_TAG:=rhoam-v${SEMVER}}"
-  "${SED_INLINE[@]}" "s/image:.*/image: quay\.io\/$ORG\/$OLM_TYPE:$IMAGE_TAG/g" "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml"
-  "${SED_INLINE[@]}" "s/containerImage:.*/containerImage: quay\.io\/$ORG\/$OLM_TYPE:$IMAGE_TAG/g" "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml"
+  yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" spec.install.spec.deployments.[0].spec.template.spec.containers[1].image quay.io/$ORG/$OLM_TYPE:$IMAGE_TAG
+  yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" metadata.annotations.containerImage quay.io/$ORG/$OLM_TYPE:$IMAGE_TAG
 
   ;;
   esac

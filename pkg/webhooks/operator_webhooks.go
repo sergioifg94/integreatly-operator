@@ -28,6 +28,8 @@ import (
 type IntegreatlyWebhookConfig struct {
 	scheme *runtime.Scheme
 
+	Enabled bool
+
 	Port        int
 	CertDir     string
 	CAConfigMap string
@@ -81,7 +83,7 @@ var Config *IntegreatlyWebhookConfig = &IntegreatlyWebhookConfig{
 // webhookConfig. It sets the port and cert dir based on the settings and
 // registers the Validator implementations from each webhook from webhookConfig.Webhooks
 func (webhookConfig *IntegreatlyWebhookConfig) SetupServer(mgr manager.Manager) error {
-	if !enabled() {
+	if !webhookConfig.enabled() {
 		return nil
 	}
 
@@ -128,7 +130,7 @@ func (webhookConfig *IntegreatlyWebhookConfig) SetupServer(mgr manager.Manager) 
 // A ownerRef to the owner parameter is set on the reconciled resources. This
 // parameter is optional, if `nil` is passed, no ownerReference will be set
 func (webhookConfig *IntegreatlyWebhookConfig) Reconcile(ctx context.Context, client k8sclient.Client, owner ownerutil.Owner) error {
-	if !enabled() {
+	if !webhookConfig.enabled() {
 		return nil
 	}
 
@@ -350,9 +352,10 @@ func (webhookConfig *IntegreatlyWebhookConfig) saveCertFromSecret(secretData map
 	return err
 }
 
-func enabled() bool {
+func (webhookConfig *IntegreatlyWebhookConfig) enabled() bool {
 	// The webhooks feature can't work when the operator runs locally, as it
 	// needs to be accessible by kubernetes and depends on the TLS certificates
 	// being mounted
-	return resources.IsRunInCluster()
+	return webhookConfig.Enabled
+	// return resources.IsRunInCluster()
 }

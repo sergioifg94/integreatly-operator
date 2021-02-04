@@ -179,6 +179,8 @@ func setupWebhooks(mgr ctrl.Manager) error {
 		},
 	})
 
+	webhooks.Config.Enabled = resources.IsRunInCluster()
+
 	if err := webhooks.Config.SetupServer(mgr); err != nil {
 		return err
 	}

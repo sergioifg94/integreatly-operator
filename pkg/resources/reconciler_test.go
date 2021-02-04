@@ -359,6 +359,9 @@ func TestReconciler_ReconcileOauthClient(t *testing.T) {
 		t.Fatalf("error building scheme: %s", err.Error())
 	}
 	existingClient := &oauthv1.OAuthClient{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test",
+		},
 		GrantMethod:  oauthv1.GrantHandlerAuto,
 		Secret:       "test",
 		RedirectURIs: []string{"http://test.com"},
@@ -374,6 +377,9 @@ func TestReconciler_ReconcileOauthClient(t *testing.T) {
 		{
 			Name: "test oauth client is reconciled correctly when it does not exist",
 			OauthClient: &oauthv1.OAuthClient{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: "test",
+				},
 				GrantMethod:  oauthv1.GrantHandlerAuto,
 				Secret:       "test",
 				RedirectURIs: []string{"http://test.com"},

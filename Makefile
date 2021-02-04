@@ -217,7 +217,7 @@ test/e2e/rhoam/prow: test/e2e
 
 .PHONY: test/e2e
 test/e2e: export SURF_DEBUG_HEADERS=1
-test/e2e: 
+test/e2e: cluster/deploy
 	go clean -testcache && go test -v ./test/e2e -timeout=120m -ginkgo.v
 
 .PHONY: test/e2e/single

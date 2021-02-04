@@ -2,8 +2,9 @@ package solutionexplorer
 
 import (
 	"context"
-	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 	"testing"
+
+	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
 	consolev1 "github.com/openshift/api/console/v1"
 
@@ -80,7 +81,7 @@ var oauthResolver = func() OauthResolver {
 func TestReconciler_ReconcileCustomResource(t *testing.T) {
 	// Initialize scheme so that types required by the scenarios are available
 	scheme := scheme.Scheme
-	if err := integreatlyv1alpha1.AddToScheme(scheme); err != nil {
+	if err := integreatlyv1alpha1.AddToSchemes.AddToScheme(scheme); err != nil {
 		t.Fatalf("failed to initialize scheme: %s", err)
 	}
 

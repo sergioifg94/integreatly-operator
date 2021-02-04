@@ -90,8 +90,10 @@ rules:
   - config.openshift.io
   resources:
   - infrastructures
+  - oauth
   verbs:
   - get
+  - list
 - apiGroups:
   - console.openshift.io
   resources:

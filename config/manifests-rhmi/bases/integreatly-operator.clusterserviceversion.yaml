@@ -11,7 +11,7 @@ metadata:
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v2
     olm.skipRange: '>=2.4.0 <2.6.1'
     support: RHMI
-  name: integreatly-operator.v2.7.0
+  name: integreatly-operator.v2.8.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -55,4 +55,4 @@ spec:
   maturity: alpha
   provider:
     name: rhmi
-  version: 2.7.0
+  version: 2.8.0

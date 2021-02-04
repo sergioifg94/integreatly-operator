@@ -174,7 +174,7 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 // +kubebuilder:rbac:groups="",resources=nodes,verbs=list
 
 // Permission to get cluster infrastructure details for alerting
-// +kubebuilder:rbac:groups=config.openshift.io,resources=infrastructures,verbs=get
+// +kubebuilder:rbac:groups=config.openshift.io,resources=infrastructures;oauth,verbs=get;list
 
 // Role permissions
 

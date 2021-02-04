@@ -17,11 +17,10 @@ IN_PROW="false
 CONTAINER_ENGINE ?= docker
 TEST_RESULTS_DIR ?= test-results
 TEMP_SERVICEACCOUNT_NAME=rhmi-operator
-CLUSTER_URL:=$(shell sh -c "oc cluster-info | grep -Eo 'https?://[-a-zA-Z0-9\.:]*'")
 
 # These tags are modified by the prepare-release script.
-RHMI_TAG ?= 2.7.0
-RHOAM_TAG ?= 1.1.0
+RHMI_TAG ?= 2.8.0
+RHOAM_TAG ?= 1.2.0
 
 export SKIP_FLAKES := true
 
@@ -121,7 +120,7 @@ setup/service_account: kustomize
 	@oc project $(NAMESPACE)
 	@-oc create -f config/rbac/service_account.yaml -n $(NAMESPACE)
 	@$(KUSTOMIZE) build config/rbac-$(INSTALLATION_SHORTHAND) | oc replace --force -f -	
-	@oc login --token=$(shell oc serviceaccounts get-token rhmi-operator -n ${NAMESPACE}) --server=${CLUSTER_URL} --kubeconfig=TMP_SA_KUBECONFIG --insecure-skip-tls-verify=true
+	@oc login --token=$(shell oc serviceaccounts get-token rhmi-operator -n ${NAMESPACE}) --server=$(shell sh -c "oc cluster-info | grep -Eo 'https?://[-a-zA-Z0-9\.:]*'") --kubeconfig=TMP_SA_KUBECONFIG --insecure-skip-tls-verify=true
 
 .PHONY: setup/git/hooks
 setup/git/hooks:
@@ -161,6 +160,7 @@ apis/integreatly/v1alpha1/zz_generated.deepcopy.go: controller-gen apis/v1alpha1
 
 .PHONY: code/gen
 code/gen: setup/moq deploy/crds/integreatly.org_rhmis_crd.yaml apis/integreatly/v1alpha1/zz_generated.deepcopy.go
+	$(CONTROLLER_GEN) rbac:roleName=manager-role webhook paths="./..."
 	@go generate ./...
 
 .PHONY: code/check

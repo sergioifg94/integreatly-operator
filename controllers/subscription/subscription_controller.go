@@ -71,7 +71,9 @@ func New(mgr manager.Manager) (*SubscriptionReconciler, error) {
 	restConfig := controllerruntime.GetConfigOrDie()
 	restConfig.Timeout = time.Second * 10
 
-	client, err := k8sclient.New(restConfig, k8sclient.Options{})
+	client, err := k8sclient.New(restConfig, k8sclient.Options{
+		Scheme: mgr.GetScheme(),
+	})
 	if err != nil {
 		return nil, err
 	}

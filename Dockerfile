@@ -21,16 +21,22 @@ COPY test/ test/
 # Build
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o rhmi-operator main.go
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/static:nonroot
-WORKDIR /
-COPY --from=builder /workspace/rhmi-operator .
-USER nonroot:nonroot
+FROM registry.access.redhat.com/ubi8/ubi:8.0
+
+ENV OPERATOR=/usr/local/bin/rhmi-operator \
+    USER_UID=1001 \
+    USER_NAME=integreatly-operator
+
+COPY --from=builder /workspace/rhmi-operator /usr/local/bin/rhmi-operator
 
 COPY templates /templates
 
 COPY manifests /manifests
 
+COPY build/bin /usr/local/bin
+RUN /usr/local/bin/user_setup
 
-ENTRYPOINT ["rhmi-operator"]
+
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
+
+USER ${USER_UID}

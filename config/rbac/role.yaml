@@ -98,7 +98,7 @@ rules:
   - config.openshift.io
   resources:
   - infrastructures
-  - oauth
+  - oauths
   verbs:
   - get
   - list

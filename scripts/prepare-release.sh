@@ -125,7 +125,6 @@ set_clusterPermissions() {
       ;;
     "managed-api-service")
       echo "Updating permissions"
-      yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" --tag '!!str' spec.install.spec.clusterPermissions[0].rules[19].resourceNames[0] 'rhoam-registry-cs'
       yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" --tag '!!str' spec.maintainers[0].email 'rhoam-support@redhat.com'
       yq w -i "packagemanifests/$OLM_TYPE/${VERSION}/$OLM_TYPE.clusterserviceversion.yaml" --tag '!!str' spec.maintainers[0].name 'rhoam'
       ;;

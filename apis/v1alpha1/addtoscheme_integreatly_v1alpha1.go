@@ -42,6 +42,7 @@ import (
 
 	operatorsv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	operatorsv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
+	apiextensionv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 
 	rbacv1 "k8s.io/api/rbac/v1"
 
@@ -88,5 +89,6 @@ func init() {
 		consolev1.AddToScheme,
 		envoyconfigv1.SchemeBuilder.AddToScheme,
 		discoveryservicev1.SchemeBuilder.AddToScheme,
+		apiextensionv1beta1.SchemeBuilder.AddToScheme,
 	)
 }

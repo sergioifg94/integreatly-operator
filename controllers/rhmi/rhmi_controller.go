@@ -176,6 +176,9 @@ func New(mgr ctrl.Manager) *RHMIReconciler {
 // Permission to get cluster infrastructure details for alerting
 // +kubebuilder:rbac:groups=config.openshift.io,resources=infrastructures;oauth,verbs=get;list
 
+// Permission to remove crd for the marin3r operator upgrade from 0.5.1 to 0.7.0
+// +kubebuilder:rbac:groups=apiextensions.k8s.io,resources=customresourcedefinitions,verbs=delete;get;list
+
 // Role permissions
 
 // +kubebuilder:rbac:groups="",resources=pods;events;configmaps;secrets,verbs=list;get;watch;create;update;patch,namespace=integreatly-operator

@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	rhmiv1alpha1 "github.com/integr8ly/integreatly-operator/apis/v1alpha1"
 	l "github.com/integr8ly/integreatly-operator/pkg/resources/logger"
 
 	userHelper "github.com/integr8ly/integreatly-operator/pkg/resources/user"
@@ -11,6 +12,7 @@ import (
 
 	usersv1 "github.com/openshift/api/user/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	k8sclient "sigs.k8s.io/controller-runtime/pkg/client"
@@ -33,7 +35,10 @@ func (r *UserReconciler) Reconcile(request ctrl.Request) (ctrl.Result, error) {
 	// new client to avoid caching issues
 	restConfig := controllerruntime.GetConfigOrDie()
 	restConfig.Timeout = time.Second * 10
-	c, _ := k8sclient.New(restConfig, k8sclient.Options{})
+	scheme := runtime.NewScheme()
+	err := rhmiv1alpha1.AddToSchemes.AddToScheme(scheme)
+
+	c, _ := k8sclient.New(restConfig, k8sclient.Options{Scheme: scheme})
 	ctx := context.TODO()
 
 	rhmiGroup := &usersv1.Group{

@@ -11,6 +11,8 @@ COPY build/_output/bin/integreatly-operator ${OPERATOR}
 # copy templates
 COPY templates /usr/local/bin/templates
 
+COPY products /usr/local/bin/products
+
 COPY manifests ${MANIFEST_DIR}
 
 COPY build/bin /usr/local/bin
